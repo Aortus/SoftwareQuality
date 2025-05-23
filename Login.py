@@ -10,21 +10,21 @@ def register(username, password):
 
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect("admins.db")
     cursor = conn.cursor()
 
     try:
-        cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, hashed))
+        cursor.execute("INSERT INTO admins (username, password_hash) VALUES (?, ?)", (username, hashed))
         conn.commit()
-        return "User succesfully registered"
+        return "Admin succesfully registered"
     
     except:
-        return "User registration failed"
+        return "Admin registration failed"
     
 def login(username, password):
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect("admins.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
+    cursor.execute("SELECT password_hash FROM admins WHERE username = ?", (username,))
     row = cursor.fetchone()
     if row and bcrypt.checkpw(password.encode(), row[0]):
         return "Login succesful"
