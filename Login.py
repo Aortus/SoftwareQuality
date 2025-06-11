@@ -1,6 +1,7 @@
 import sqlite3
 import bcrypt
 import re
+import datetime
 
 def register(username, password):
     if not is_valid_username(username):
@@ -8,7 +9,7 @@ def register(username, password):
     if not is_valid_password(password):
         return "Invalid password, try again! (atleast 12 characters, uppercase letter, lowercase letter, number, symbol and no more than 30 characters)" 
 
-    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()) #Bcrypt hashes the password, to retrieve the password, you need to use bcrypt.checkpw()
 
     conn = sqlite3.connect("admins.db")
     cursor = conn.cursor()
@@ -26,7 +27,7 @@ def login(username, password):
     cursor = conn.cursor()
     cursor.execute("SELECT password_hash FROM admins WHERE username = ?", (username,))
     row = cursor.fetchone()
-    if row and bcrypt.checkpw(password.encode(), row[0]):
+    if row and bcrypt.checkpw(password.encode(), row[0]): #Uses bcrypt to check the password, this is because the password is hashed
         return "Login succesful"
     else:
         return "Invalid username or password"
@@ -36,7 +37,7 @@ def is_valid_username(UN):
     if len(username) < 7 or len(username) > 10: #Length
         return False
     
-    if re.match(r'^[A-Za-z_][A-Za-z0-9_\'\.]*$', username):
+    if re.match(r'^[A-Za-z_][A-Za-z0-9_\'\.]*$', username): #mathes the regex to the requirements
         return True
     else:
         return False
