@@ -11,7 +11,7 @@ def register(username, password):
 
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()) #Bcrypt hashes the password, to retrieve the password, you need to use bcrypt.checkpw()
 
-    conn = sqlite3.connect("admins.db")
+    conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
 
     try:
@@ -23,7 +23,7 @@ def register(username, password):
         return "Admin registration failed"
     
 def login(username, password):
-    conn = sqlite3.connect("admins.db")
+    conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
     cursor.execute("SELECT password_hash FROM admins WHERE username = ?", (username,))
     row = cursor.fetchone()

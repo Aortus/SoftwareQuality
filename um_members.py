@@ -6,7 +6,7 @@ import Login
 
 # === Setup database ===
 def SetupDB():
-    conn = sqlite3.connect("Admins.db")
+    conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS admins (
@@ -24,9 +24,9 @@ def SetupDB():
         print("Admin user already exists.")
     conn.commit()
     conn.close()
-    
-    conn = sqlite3.connect("Users.db")
+    conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
