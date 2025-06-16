@@ -3,7 +3,7 @@ import bcrypt
 import re
 import datetime
 
-def register(username, password):
+def register(username, password, firstname, lastname, admintype):
     if not is_valid_username(username):
         return "Invalid username, try again! (Between 7 and 10 characters, start with a letter or underscore)"
     if not is_valid_password(password):
@@ -15,7 +15,7 @@ def register(username, password):
     cursor = conn.cursor()
 
     try:
-        cursor.execute("INSERT INTO admins (username, password_hash) VALUES (?, ?)", (username, hashed))
+        cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, admin_type) VALUES (?, ?, ?, ?, ?)", (username, hashed, firstname, lastname, admintype))
         conn.commit()
         return "Admin succesfully registered"
     

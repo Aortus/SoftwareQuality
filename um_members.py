@@ -1,8 +1,7 @@
 import sqlite3
 import bcrypt
 # import re
-import Login
-import datetime
+import LoginUI
 
 
 # === Setup database ===
@@ -11,8 +10,10 @@ def SetupDB():
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS admins (
-        username TEXT PRIMARY KEY,
-        password_hash TEXT
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        password_hash TEXT,
+        naam TEXT
     )
     """)
     # To do: add a column for the type of admin (Super administrator, System administrator or Service engineer)
@@ -20,7 +21,7 @@ def SetupDB():
     cursor = conn.cursor()
     hashed = bcrypt.hashpw("Admin_123?".encode(), bcrypt.gensalt())
     try:
-        cursor.execute("INSERT INTO admins (username, password_hash) VALUES (?, ?)", ("super_admin", hashed))
+        cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, admin_type) VALUES (?, ?, ?, ?, ?)", ("super_admin", hashed, "Super", "Admin", "Super Administrator"))
     except sqlite3.IntegrityError:
         print("Admin user already exists.")
     conn.commit()
@@ -65,7 +66,8 @@ def SetupDB():
         targetstateofcharge INTEGER,
         outofservice BOOLEAN,
         mileage INTEGER,
-        lastmaintenance DATETIME
+        lastmaintenance DATETIME,
+        location TEXT
     )
     """)              
     conn.commit()
@@ -74,7 +76,4 @@ def SetupDB():
     
 if __name__ == "__main__":
     SetupDB()
-    print(Login.register("Username1", "Ab1234561111111!!")) #Will fail now because it is already in the database
-    print(Login.login("Username", "Ab123456!!")) #should fail
-    print(Login.login("Username1", "Ab1234561111111!!")) #should succeed
-    print(Login.login("SystemEngineer", "System_123?")) #should succeed
+    LoginUI.login_screen()

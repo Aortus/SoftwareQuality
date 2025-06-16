@@ -17,6 +17,3 @@ def login_screen():
         else:
             print("\nFout bij het inloggen:")
             input("Druk Enter om opnieuw te proberen")
-
-if __name__ == "__main__":
-    login_screen()
