@@ -47,8 +47,28 @@ def SetupDB():
     # To do: make the user ID in another way               
     conn.commit()
     conn.close()
-    
-    # To do: Make a db for the scooters
+
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS scooters (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        in_servicedate DATETIME DEFAULT CURRENT_TIMESTAMP,
+        brand TEXT,
+        model TEXT,
+        serialnumber TEXT UNIQUE,
+        topspeed INTEGER,
+        batterycapacity INTEGER,
+        stateofcharge INTEGER,
+        targetstateofcharge INTEGER,
+        outofservice BOOLEAN,
+        mileage INTEGER,
+        lastmaintenance DATETIME
+    )
+    """)              
+    conn.commit()
+    conn.close()
     
     
 if __name__ == "__main__":
