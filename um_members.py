@@ -2,6 +2,7 @@ import sqlite3
 import bcrypt
 # import re
 import Login
+import datetime
 
 
 # === Setup database ===
@@ -76,3 +77,4 @@ if __name__ == "__main__":
     print(Login.register("Username1", "Ab1234561111111!!")) #Will fail now because it is already in the database
     print(Login.login("Username", "Ab123456!!")) #should fail
     print(Login.login("Username1", "Ab1234561111111!!")) #should succeed
+    print(Login.login("SystemEngineer", "System_123?")) #should succeed
