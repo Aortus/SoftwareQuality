@@ -15,11 +15,19 @@ def get_all_admins():
     decrypted_admins = []
     for admin in admins:
         admin_list = list(admin)
-        for i in range(1, len(admin_list)):
+        for i in range(0, len(admin_list)):
+            if i == 0 or i == 2:
+                continue
             admin_list[i] = Encryption.decrypt_data(admin_list[i])
         decrypted_admins.append(tuple(admin_list))
 
     return decrypted_admins
+
+def print_all_admins():
+    admins = get_all_admins()
+
+    for admin in admins:
+        print(f"ID: {admin[0]} Username: {admin[1]} Voornaam: {admin[3]} Achternaam: {admin[4]} Registratie datum: {admin[5]} Admin Type: {admin[6]}")
 
 def update_acc(username):
     conn = sqlite3.connect("SQDB.db")
@@ -113,7 +121,14 @@ def AddAdmin():
         new_password = input("Voer het nieuwe wachtwoord in: ")
         new_firstname = input("Voer de voornaam in: ")
         new_lastname = input("Voer de achternaam in: ")
-        new_admintype = input("Voer het admin type in (bijv. 'Super Administrator', 'System Administrator', 'Service Engineer'): ")
+        admintype = input("Voer het admin type in ('1. System Administrator', '2. Service Engineer'): ").lower()
+        if admintype in ("1", "system administrator", "systemadmin"):
+            new_admintype = "System Administrator"
+        elif admintype in ("2", "service engineer", "serviceengineer"):
+            new_admintype = "Service Engineer"
+        else:
+            print("Ongeldige admin type. Probeer het opnieuw.")
+            go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
 
         if (Login.register(new_username, new_password, new_firstname, new_lastname, new_admintype) != "Admin succesfully registered"):
             print("Er is iets fout gegaan bij het toevoegen van de admin. Probeer het opnieuw.")
