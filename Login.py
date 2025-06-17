@@ -31,8 +31,9 @@ def register(username, password, firstname, lastname, admintype):
     
 def login(username, password):
     admins = Encryption.get_all_admins()
+    print(admins)
     for admin in admins:
-        if admin[0] == username and bcrypt.checkpw(password.encode(), admin[1]):
+        if admin[1] == username and bcrypt.checkpw(password.encode(), admin[2]):
             return "Login succesful"
     return "Invalid username or password"
 

@@ -3,14 +3,14 @@ import LoginUI
 import sqlite3
 import time
 import ServiceEngineerLogic
+import Encryption
 
 def get_admin_type(username):
-    conn = sqlite3.connect("SQDB.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT admin_type FROM admins WHERE username = ?", (username,))
-    row = cursor.fetchone()
-    conn.close()
-    return row[0] if row else None
+    admins = Encryption.get_all_admins()
+    print(admins)
+    for admin in admins:
+        if admin[1] == username:
+            return Encryption.decrypt_data(admin[6])
 
 def service_engineer_menu(username):
     while True:
