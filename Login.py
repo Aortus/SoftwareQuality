@@ -1,7 +1,9 @@
 import sqlite3
 import bcrypt
 import re
+import Encryption
 import datetime
+import logger
 
 def register(username, password, firstname, lastname, admintype):
     if not is_valid_username(username):
@@ -11,11 +13,16 @@ def register(username, password, firstname, lastname, admintype):
 
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()) #Bcrypt hashes the password, to retrieve the password, you need to use bcrypt.checkpw()
 
+    encrypted_username = Encryption.encrypt_data(username)
+    encrypted_firstname = Encryption.encrypt_data(firstname)
+    encrypted_lastname = Encryption.encrypt_data(lastname)
+    encrypted_admintype = Encryption.encrypt_data(admintype)
+    date = Encryption.encrypt_data(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
 
     try:
-        cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, admin_type) VALUES (?, ?, ?, ?, ?)", (username, hashed, firstname, lastname, admintype))
+        cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, registration_date, admin_type) VALUES (?, ?, ?, ?, ?, ?)", (encrypted_username, hashed, encrypted_firstname, encrypted_lastname, date, encrypted_admintype))
         conn.commit()
         return "Admin succesfully registered"
     
@@ -23,14 +30,12 @@ def register(username, password, firstname, lastname, admintype):
         return "Admin registration failed"
     
 def login(username, password):
-    conn = sqlite3.connect("SQDB.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT password_hash FROM admins WHERE username = ?", (username,))
-    row = cursor.fetchone()
-    if row and bcrypt.checkpw(password.encode(), row[0]): #Uses bcrypt to check the password, this is because the password is hashed
-        return "Login succesful"
-    else:
-        return "Invalid username or password"
+    admins = Encryption.get_all_admins()
+    for admin in admins:
+        if admin[0] == username and bcrypt.checkpw(password.encode(), admin[1]):
+            return "Login succesful"
+    return "Invalid username or password"
+
 
 def is_valid_username(UN):
     username = UN.lower()

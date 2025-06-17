@@ -3,6 +3,15 @@ import bcrypt
 import Login
 import sqlite3
 
+# Getallusers retrieves all users from the database.
+def get_all_users():
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM admins")
+    users = cursor.fetchall()
+    conn.close()
+    return users
+
 def update_acc(username):
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
@@ -17,20 +26,30 @@ def update_acc(username):
     ).lower()
 
     if change in ("1", "naam"):
-        new_name = ""
-        while True:
-            new_name = input("Wat moet de nieuwe naam worden? (type Q om te stoppen): ")
-            if new_name.lower() == "q":
+        choice = input("Welke naam wilt u veranderen? (1. Voornaam / 2. Achternaam): ").lower()
+        if choice in ("1", "voornaam", "voor"):
+            new_firstname = input("Voer de nieuwe voornaam in (type Q om te stoppen): ")
+            if new_firstname.lower() == "q":
                 print("Wijzigen afgebroken.")
-                break
-            # if(Login.is_valid_username(new_name)): Hier moet een nieuwe naam checker komen
+                return
             cursor.execute(
-                "UPDATE admins SET naam = ? WHERE username = ?",
-                (new_name, username)
+                "UPDATE admins SET firstname = ? WHERE username = ?",
+                (new_firstname, username)
             )
             conn.commit()
-            print(f"Naam gewijzigd naar: {new_name}")
-            break
+            print(f"Voornaam gewijzigd naar: {new_firstname}")
+
+        elif choice in ("2", "achternaam", "achter"):
+            new_lastname = input("Voer de nieuwe achternaam in (type Q om te stoppen): ")
+            if new_lastname.lower() == "q":
+                print("Wijzigen afgebroken.")
+                return
+            cursor.execute(
+                "UPDATE admins SET lastname = ? WHERE username = ?",
+                (new_lastname, username)
+            )
+            conn.commit()
+            print(f"Achternaam gewijzigd naar: {new_lastname}")
 
     elif change in ("2", "username"):
         new_username = ""
