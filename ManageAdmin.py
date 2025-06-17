@@ -1,16 +1,25 @@
 import sqlite3
 import bcrypt
 import Login
-import sqlite3
+import datetime
+import Encryption
 
 # Getallusers retrieves all users from the database.
-def get_all_users():
+def get_all_admins():
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM admins")
-    users = cursor.fetchall()
+    admins = cursor.fetchall()
     conn.close()
-    return users
+
+    decrypted_admins = []
+    for admin in admins:
+        admin_list = list(admin)
+        for i in range(1, len(admin_list)):
+            admin_list[i] = Encryption.decrypt_data(admin_list[i])
+        decrypted_admins.append(tuple(admin_list))
+
+    return decrypted_admins
 
 def update_acc(username):
     conn = sqlite3.connect("SQDB.db")
@@ -83,29 +92,45 @@ def update_acc(username):
     elif change in ("4", "verwijderen"):
         delete = input("Het terug halen van een account is alleen mogelijk door middel van het laden van een oude backup.\nType verwijder om door te gaan met verwijderen.")
         if(delete == "verwijder"):
-            cursor.execute("SELECT id FROM admins WHERE username = ?", (username,))
-            row = cursor.fetchone()
-            conn.close()
+            decrypted_admins = get_all_admins()
+            for admin in decrypted_admins:
+                if admin[1] == username:
+                    row = admin
 
             if row:
                 delete_entry_by_id(row[0]) 
             else:
                 return None
-    else:
-        print("Ongeldige keuze.")
+        else:
+            print("Ongeldige keuze.")
 
     conn.close()
 
-def delete_entry_by_id(table_name, entry_id): #To do, een find id with username
+def AddAdmin():
+    go_on = ""
+    while go_on.lower() != "q":
+        new_username = input("Voer de nieuwe username in: ")
+        new_password = input("Voer het nieuwe wachtwoord in: ")
+        new_firstname = input("Voer de voornaam in: ")
+        new_lastname = input("Voer de achternaam in: ")
+        new_admintype = input("Voer het admin type in (bijv. 'Super Administrator', 'System Administrator', 'Service Engineer'): ")
+
+        if (Login.register(new_username, new_password, new_firstname, new_lastname, new_admintype) != "Admin succesfully registered"):
+            print("Er is iets fout gegaan bij het toevoegen van de admin. Probeer het opnieuw.")
+            go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
+        
+        else:
+            go_on = "q"
+
+def delete_entry_by_id(table_name, entry_id):
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
 
-    # Use parameterized query to avoid SQL injection
     sql = f"DELETE FROM {table_name} WHERE id = ?"
     cursor.execute(sql, (entry_id,))
 
     conn.commit()
     conn.close()
 
-    print(f"Deleted entry with ID {entry_id} from table '{table_name}'.")
+    return f"Account met {entry_id} verwijderd van '{table_name}'."
 
