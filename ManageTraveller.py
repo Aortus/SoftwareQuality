@@ -63,6 +63,8 @@ def is_valid_email(email):
     for traveller in travellers:
         if traveller[9] == email:
             return False
+        
+    return True if re.match(r"[^@]+@[^@]+\.[^@]+", email) else False
 
 def get_all_travellers():
     conn = sqlite3.connect("SQDB.db")
@@ -89,6 +91,21 @@ def delete_traveller(email):
             return ManageAdmin.delete_entry_by_id("users", traveller[0])
     return "Traveller not found"
     
+def search_traveller(search_term): # print(ManageTraveller.search_traveller("joh"))
+    travellers = get_all_travellers()
+    filtered_travellers = []
+
+    for traveller in travellers:
+        for data in traveller:
+            if isinstance(data, str) and search_term.lower() in data.lower():
+                filtered_travellers.append(traveller)
+                break
+
+    if filtered_travellers:
+        return filtered_travellers
+    else:
+        return "Geen traveller gevonden met deze zoekterm"
+
     
      
 
