@@ -4,7 +4,6 @@ import Login
 import datetime
 import Encryption
 
-# Getallusers retrieves all users from the database.
 def get_all_admins():
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()

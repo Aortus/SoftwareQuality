@@ -5,6 +5,9 @@ import Encryption
 import LoginUI
 import Login
 import datetime
+import ManageTraveller
+import ManageAdmin
+
 
 
 # === Setup database ===
@@ -80,11 +83,23 @@ import datetime
 #         location TEXT
 #     )
 #     """)              
-#     conn.commit()
-#     conn.close()
+#    cursor.execute("""
+#    CREATE TABLE IF NOT EXISTS logs (
+#        id INTEGER PRIMARY KEY AUTOINCREMENT,
+#        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+#        user_id INTEGER,
+#        action TEXT,
+#        details TEXT,
+#        is_suspicious INTEGER DEFAULT 0,
+#        is_read INTEGER DEFAULT 0
+#    )
+#    """
+#    )
+#
+#    conn.commit()
+#    conn.close()
     
     
 if __name__ == "__main__":
     # SetupDB()
-
     LoginUI.login_screen()
