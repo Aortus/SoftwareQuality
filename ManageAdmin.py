@@ -89,6 +89,7 @@ def update_acc(username):
         while True:
             new_password = input("Voer nieuw wachtwoord in (type Q om te stoppen): ")
             if(Login.is_valid_password(new_password)):
+                new_password = "temp" + new_password
                 hashed_pw = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
                 cursor.execute(
                     "UPDATE admins SET password_hash = ? WHERE username = ?",
@@ -96,6 +97,10 @@ def update_acc(username):
                 )
                 conn.commit()
                 print("Wachtwoord gewijzigd.")
+                
+            elif new_password.lower() == "q":
+                print("Wijzigen afgebroken.")
+                break
     
     elif change in ("4", "verwijderen"):
         delete = input("Het terug halen van een account is alleen mogelijk door middel van het laden van een oude backup.\nType verwijder om door te gaan met verwijderen.")
