@@ -1,7 +1,6 @@
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 import os
-import sqlite3
 
 load_dotenv()
 
@@ -22,21 +21,3 @@ def decrypt_data(token):
     cipher = Fernet(key)
     decrypted = cipher.decrypt(token)
     return decrypted.decode()
-
-import sqlite3
-
-def get_all_admins():
-    conn = sqlite3.connect("SQDB.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM admins")
-    admins = cursor.fetchall()
-    conn.close()
-
-    decrypted_admins = []
-    for admin in admins:
-        admin_list = list(admin)  # convert tuple to list so we can modify it
-        admin_list[1] = decrypt_data(admin_list[1])  # decrypt username
-        decrypted_admins.append(tuple(admin_list))
-
-    return decrypted_admins
-
