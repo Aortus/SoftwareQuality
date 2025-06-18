@@ -148,4 +148,3 @@ def delete_entry_by_id(table_name, entry_id):
     conn.close()
 
     return f"Account met {entry_id} verwijderd van '{table_name}'."
-

@@ -4,6 +4,7 @@ import re
 import Encryption
 import datetime
 import logger
+import ManageAdmin
 
 def register(username, password, firstname, lastname, admintype):
     if not is_valid_username(username):
@@ -34,9 +35,27 @@ def login(username, password):
     print(admins)
     for admin in admins:
         if admin[1] == username and bcrypt.checkpw(password.encode(), admin[2]):
-            return "Login succesful"
+            if password.startswith("temp"):
+                return "Temporary password detected"
+            else:
+                return "Login succesful"
     return "Invalid username or password"
 
+def change_password(username, new_password): #new_password is already checked in UI
+    admins = ManageAdmin.get_all_admins()
+    for admin in admins:
+        if admin[1] == username:
+            conn = sqlite3.connect("SQDB.db")
+            cursor = conn.cursor()
+            adminid = admin[0]
+            hashed_pw = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
+            cursor.execute(
+                "UPDATE admins SET password_hash = ? WHERE id = ?",
+                (hashed_pw, adminid)
+            )
+            conn.commit()
+            conn.close()
+            return "Password changed successfully"
 
 def is_valid_username(UN):
     username = UN.lower()
@@ -51,6 +70,8 @@ def is_valid_username(UN):
 def is_valid_password(password):
     if len(password) < 12 or len(password) > 30: #Length
         return False
+    # if password.startswith("temp"):
+    #     return False
     if not re.search(r"[A-Z]", password): #Uppercase
         return False
     if not re.search(r"[a-z]", password): #Lowercase
