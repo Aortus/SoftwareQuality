@@ -63,26 +63,30 @@ import ManageAdmin
 #     conn.commit()
 #     conn.close()
 
-#     conn = sqlite3.connect("SQDB.db")
-#     cursor = conn.cursor()
+    # conn = sqlite3.connect("SQDB.db")
+    # cursor = conn.cursor()
 
-#     cursor.execute("""
-#     CREATE TABLE IF NOT EXISTS scooters (
-#         id INTEGER PRIMARY KEY AUTOINCREMENT,
-#         in_servicedate DATETIME DEFAULT CURRENT_TIMESTAMP,
-#         brand TEXT,
-#         model TEXT,
-#         serialnumber TEXT UNIQUE,
-#         topspeed INTEGER,
-#         batterycapacity INTEGER,
-#         stateofcharge INTEGER,
-#         targetstateofcharge INTEGER,
-#         outofservice BOOLEAN,
-#         mileage INTEGER,
-#         lastmaintenance DATETIME,
-#         location TEXT
-#     )
-#     """)              
+    # cursor.execute("DROP TABLE IF EXISTS scooters")
+
+    # cursor.execute("""
+    # CREATE TABLE IF NOT EXISTS scooters (
+    #     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #     brand TEXT,
+    #     model TEXT,
+    #     serialnumber TEXT UNIQUE,
+    #     topspeed INTEGER,
+    #     batterycapacity INTEGER,
+    #     stateofcharge INTEGER,
+    #     targetstateofcharge INTEGER,
+    #     location TEXT,
+    #     outofservice BOOLEAN,
+    #     mileage INTEGER,
+    #     lastmaintenance DATETIME
+    # )
+    # """
+    # )     
+    # conn.commit()
+    # cursor = conn.cursor()         
 #    cursor.execute("""
 #    CREATE TABLE IF NOT EXISTS logs (
 #        id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -98,21 +102,45 @@ import ManageAdmin
 #
 #    conn.commit()
 #    conn.close()
-#    conn = sqlite3.connect("SQDB.db")
-#    cursor = conn.cursor()
-#    enc_username2 = Encryption.encrypt_data("service_engineer")
-#    enc_firstname2 = Encryption.encrypt_data("service")
-#    enc_lastname2 = Encryption.encrypt_data("engineer")
-#    enc_admintype2 = Encryption.encrypt_data("Service Engineer")
-#    enc_date2 = Encryption.encrypt_data(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-#    hashed2 = bcrypt.hashpw("ServiceEng".encode(), bcrypt.gensalt())
-#    try:
-#        cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, registration_date, admin_type) VALUES (?, ?, ?, ?, ?, ?)", (enc_username2, hashed2, enc_firstname2, enc_lastname2, enc_date2, enc_admintype2))
-#        print("Service Engineer user created successfully.")
-#    except sqlite3.IntegrityError:
-#        print("Service Engineer user already exists.")
-#    conn.commit()
-#    conn.close()
+    # conn = sqlite3.connect("SQDB.db")
+    # cursor = conn.cursor()
+    # enc_username2 = Encryption.encrypt_data("service_engineer")
+    # enc_firstname2 = Encryption.encrypt_data("service")
+    # enc_lastname2 = Encryption.encrypt_data("engineer")
+    # enc_admintype2 = Encryption.encrypt_data("Service Engineer")
+    # enc_date2 = Encryption.encrypt_data(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    # hashed2 = bcrypt.hashpw("ServiceEng".encode(), bcrypt.gensalt())
+    # try:
+    #     cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, registration_date, admin_type) VALUES (?, ?, ?, ?, ?, ?)", (enc_username2, hashed2, enc_firstname2, enc_lastname2, enc_date2, enc_admintype2))
+    #     print("Service Engineer user created successfully.")
+    # except sqlite3.IntegrityError:
+    #     print("Service Engineer user already exists.")
+    # conn.commit()
+    # conn.close()
+
+
+    # conn = sqlite3.connect("SQDB.db")
+    # cursor = conn.cursor()
+    # enc_brand = Encryption.encrypt_data("Xiaomi")
+    # enc_model = Encryption.encrypt_data("M365")
+    # enc_serialnumber = Encryption.encrypt_data("XIA123456789")
+    # enc_topspeed = Encryption.encrypt_data("25")
+    # enc_batterycapacity = Encryption.encrypt_data("5000")
+    # enc_stateofcharge = Encryption.encrypt_data("100")
+    # enc_targetstateofcharge = Encryption.encrypt_data("100")
+    # enc_location = Encryption.encrypt_data("51.9225, 4.47917")  # Example coordinates in Rotterdam
+    # enc_outofservice = Encryption.encrypt_data("0")
+    # enc_mileage = Encryption.encrypt_data("0")
+    # enc_lastmaintenance = Encryption.encrypt_data(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    # try:
+    #     cursor.execute("INSERT INTO scooters (brand, model, serialnumber, topspeed, batterycapacity, stateofcharge, targetstateofcharge, location, outofservice, mileage, lastmaintenance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+    #                    (enc_brand, enc_model, enc_serialnumber, enc_topspeed, enc_batterycapacity, enc_stateofcharge, enc_targetstateofcharge, enc_location, enc_outofservice, enc_mileage, enc_lastmaintenance))
+    #     print("Scooter created successfully.")
+    # except sqlite3.IntegrityError:
+    #     print("Scooter already exists.")
+    # conn.commit()
+    # conn.close()
+
     
 if __name__ == "__main__":
     # SetupDB()
