@@ -120,13 +120,39 @@ def traveller_beheer():
 
         keuze = input("Maak een keuze (1-5): ")
         if keuze == "1":
-            ManageTraveller.register_traveller()
+            print("\nVoer de gegevens van de traveller in:\n")
+            firstname = input("Voornaam: ")
+            lastname = input("Achternaam: ")
+            birthdate = input("Geboortedatum (YYYY-MM-DD): ")
+            gender = input("Geslacht (M/V): ").strip().upper()
+            streetname = input("Straatnaam: ")
+            streetnumber = input("Huisnummer: ")
+            zipcode = input("Postcode: ")
+            city = input("Woonplaats: ")
+            email = input("E-mailadres: ")
+            mobilephone = input("Mobiele telefoon: ")
+            drivinglicense = input("Rijbewijs: ").strip().lower()
+
+            ManageTraveller.register_traveller(firstname, lastname, birthdate, gender, streetname, streetnumber, zipcode, city, email, mobilephone, drivinglicense)
         elif keuze == "2":
             ManageTraveller.update_traveller()
         elif keuze == "3":
-            ManageTraveller.delete_traveller()
+            email = input("Voer het e-mailadres van de traveller in die u wilt verwijderen: ")
+            print("Weet u zeker dat u deze traveller wilt verwijderen?")
+            confirm = input("Typ 'ja' om te bevestigen: ").strip().lower()
+            if confirm == 'ja':
+                print(f"Traveller met e-mailadres {email} wordt verwijderd.")
+                ManageTraveller.delete_traveller(email)
+                input("Traveller succesvol verwijderd. Druk op Enter om verder te gaan.")
+            else:
+                print("Travellerverwijdering geannuleerd.")
+                input("Druk op Enter om terug te keren.")
         elif keuze == "4":
-            ManageTraveller.search_traveller()
+            search_term = input("Voer een zoekterm in (deel van voornaam, achternaam, e-mailadres, etc.): ").strip()
+            if not search_term:
+                input("Zoekterm mag niet leeg zijn. Druk op Enter om terug te keren.")
+                continue
+            print(ManageTraveller.search_traveller(search_term))
         elif keuze == "5":
             break
         else:
