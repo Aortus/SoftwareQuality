@@ -3,6 +3,7 @@ import Login
 import MenuUI
 
 def login_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
     while True:
         print("Login Scherm")
         username = input("Username: ")

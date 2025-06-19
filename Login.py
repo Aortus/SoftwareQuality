@@ -31,7 +31,7 @@ def register(username, password, firstname, lastname, admintype):
         return "Admin registration failed"
     
 def login(username, password):
-    admins = Encryption.get_all_admins()
+    admins = ManageAdmin.get_all_admins()
     print(admins)
     for admin in admins:
         if admin[1] == username and bcrypt.checkpw(password.encode(), admin[2]):

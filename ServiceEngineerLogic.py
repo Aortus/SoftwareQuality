@@ -1,17 +1,15 @@
 import bcrypt
 import sqlite3
 import datetime
+import Login
 
 def update_password(username):
     new_password = input("Nieuw wachtwoord: ")
-    hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
-
-    conn = sqlite3.connect("SQDB.db")
-    cursor = conn.cursor()
-    cursor.execute("UPDATE admins SET password_hash = ? WHERE username = ?", (hashed, username))
-    conn.commit()
-    conn.close()
-    input("Wachtwoord succesvol gewijzigd. Druk op Enter om terug te keren.")
+    if Login.is_valid_password(new_password):
+        Login.change_password(username, new_password)
+        input("Wachtwoord succesvol gewijzigd. Druk op Enter om terug te keren.")
+    else:
+        input("Ongeldig wachtwoord. Zorg ervoor dat het minstens 12 tekens lang is, een hoofdletter, een kleine letter, een cijfer en een speciaal teken bevat. Druk op Enter om opnieuw te proberen.")
 
 
 def search_scooter():

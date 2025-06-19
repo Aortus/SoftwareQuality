@@ -4,13 +4,15 @@ import sqlite3
 import time
 import ServiceEngineerLogic
 import Encryption
+import ManageAdmin
+import Login
 
 def get_admin_type(username):
-    admins = Encryption.get_all_admins()
+    admins = ManageAdmin.get_all_admins()
     print(admins)
     for admin in admins:
         if admin[1] == username:
-            return Encryption.decrypt_data(admin[6])
+            return admin[6]
 
 def service_engineer_menu(username):
     while True:

@@ -98,8 +98,25 @@ import ManageAdmin
 #
 #    conn.commit()
 #    conn.close()
-    
+#    conn = sqlite3.connect("SQDB.db")
+#    cursor = conn.cursor()
+#    enc_username2 = Encryption.encrypt_data("service_engineer")
+#    enc_firstname2 = Encryption.encrypt_data("service")
+#    enc_lastname2 = Encryption.encrypt_data("engineer")
+#    enc_admintype2 = Encryption.encrypt_data("Service Engineer")
+#    enc_date2 = Encryption.encrypt_data(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+#    hashed2 = bcrypt.hashpw("ServiceEng".encode(), bcrypt.gensalt())
+#    try:
+#        cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, registration_date, admin_type) VALUES (?, ?, ?, ?, ?, ?)", (enc_username2, hashed2, enc_firstname2, enc_lastname2, enc_date2, enc_admintype2))
+#        print("Service Engineer user created successfully.")
+#    except sqlite3.IntegrityError:
+#        print("Service Engineer user already exists.")
+#    conn.commit()
+#    conn.close()
     
 if __name__ == "__main__":
     # SetupDB()
     LoginUI.login_screen()
+
+    # ServiceEngineer Login: service_engineer / ServiceEng ? Service_Engineer123?
+    # Admin Login: super_admin / Admin_123?
