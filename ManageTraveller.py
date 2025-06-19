@@ -41,6 +41,115 @@ def register_traveller(firstname, lastname, birthdate, gender, streetname, stree
     except sqlite3.IntegrityError:
         return "Traveller registration failed"
 
+def print_traveller_info(traveller):
+    print(
+        f"\nTraveller Informatie:\n"
+        f"1. Voornaam: {traveller[2]}\n"
+        f"2. Achternaam: {traveller[3]}\n"
+        f"3. Geboortedatum: {traveller[4]} km/h\n"
+        f"4. Geslacht: {traveller[5]} km\n"
+        f"5. Adres: {traveller[6]} {traveller[7]}, {traveller[8]} {traveller[9]}\n"
+        f"6. Email: {traveller[10]}\n"
+        f"7. Mobiel nummer: {traveller[11]}\n"
+        f"8. Rijbewijs: {traveller[12]}\n"
+    )
+    
+def update_traveller(role):
+    email = input("Voer de email van de traveller in: ")
+
+    travellers = get_all_travellers()
+    traveller_found = None
+    for traveller in travellers:
+        if traveller[10] == email:
+            traveller_found = list(traveller)
+            break
+
+    if not traveller_found:
+        input("Traveller niet gevonden. Druk op Enter om terug te keren.")
+        return
+
+    # Define which indexes can be edited
+    if role.lower() in ["super administrator", "system administrator"]:
+        # indexes based on your INSERT: (id=0, registration_date=1, firstname=2, lastname=3, ...)
+        editable_fields = list(range(2, 13))  # allow editing all except id and registration_date
+    else:
+        print("Je hebt geen rechten om deze gegevens te bewerken.")
+        return
+
+    while True:
+        print_traveller_info(traveller_found)
+        print(f"Bewerkbare velden: {', '.join(map(str, editable_fields))}")
+        idx = input("Kies een veld om aan te passen of typ 'q' om terug te keren: ").strip()
+
+        if idx.lower() == "q":
+            break
+
+        try:
+            idx = int(idx)
+            if idx not in editable_fields:
+                raise ValueError(f"Toegang geweigerd. Je mag alleen de velden {editable_fields} bewerken.")
+
+            if idx == 2:
+                traveller_found[2] = input("Nieuwe voornaam: ")
+            elif idx == 3:
+                traveller_found[3] = input("Nieuwe achternaam: ")
+            elif idx == 4:
+                traveller_found[4] = input("Nieuwe geboortedatum (YYYY-MM-DD): ")
+            elif idx == 5:
+                traveller_found[5] = input("Nieuw geslacht: ")
+            elif idx == 6:
+                traveller_found[6] = input("Nieuwe straatnaam: ")
+            elif idx == 7:
+                traveller_found[7] = input("Nieuw huisnummer: ")
+            elif idx == 8:
+                traveller_found[8] = input("Nieuwe postcode: ")
+                if not is_valid_zipcode(traveller_found[8]):
+                    raise ValueError("Ongeldige postcode.")
+            elif idx == 9:
+                traveller_found[9] = input("Nieuwe stad: ")
+                if not is_valid_city(traveller_found[9]):
+                    raise ValueError("Ongeldige stad.")
+            elif idx == 10:
+                traveller_found[10] = input("Nieuw emailadres: ")
+                if not is_valid_email(traveller_found[10]):
+                    raise ValueError("Email is ongeldig of bestaat al.")
+            elif idx == 11:
+                traveller_found[11] = input("Nieuw mobiel nummer (8 cijfers): ")
+                if not is_valid_nl_mobile(traveller_found[11]):
+                    raise ValueError("Ongeldig mobiel nummer.")
+            elif idx == 12:
+                traveller_found[12] = input("Nieuw rijbewijsnummer: ")
+                if not is_valid_license(traveller_found[12]):
+                    raise ValueError("Ongeldig rijbewijsnummer.")
+
+            # Encrypt all except ID
+            encrypted = [
+                traveller_found[0] if i == 0 else Encryption.encrypt_data(str(v)).decode()
+                for i, v in enumerate(traveller_found)
+            ]
+
+            conn = sqlite3.connect("SQDB.db")
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE users SET 
+                    firstname = ?, lastname = ?, birthdate = ?, gender = ?, 
+                    streetname = ?, streetnumber = ?, zipcode = ?, city = ?, 
+                    email = ?, mobilephone = ?, drivinglicense = ?
+                WHERE user_id = ?
+            """, (
+                encrypted[2], encrypted[3], encrypted[4], encrypted[5],
+                encrypted[6], encrypted[7], encrypted[8], encrypted[9],
+                encrypted[10], encrypted[11], encrypted[12],
+                encrypted[0]
+            ))
+            conn.commit()
+            conn.close()
+
+            input("Gegevens succesvol bijgewerkt. Druk op Enter om verder te gaan.")
+
+        except Exception as e:
+            input(f"Fout: {e}\nDruk op Enter om opnieuw te proberen.")
+
 def is_valid_zipcode(zc):
     pattern = r"^\d{4}[A-Za-z]{2}$"
     return re.match(pattern, zc) is not None
