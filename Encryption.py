@@ -1,6 +1,7 @@
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 import os
+import bcrypt
 
 load_dotenv()
 
@@ -21,3 +22,10 @@ def decrypt_data(token):
     cipher = Fernet(key)
     decrypted = cipher.decrypt(token)
     return decrypted.decode()
+
+def hash_password(password):
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    return hashed
+
+def check_password(hashed_password, password):
+    return bcrypt.checkpw(password.encode(), hashed_password)

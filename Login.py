@@ -3,7 +3,7 @@ import bcrypt
 import re
 import Encryption
 import datetime
-import logger
+import Logs
 import ManageAdmin
 
 def register(username, password, firstname, lastname, admintype):
