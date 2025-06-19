@@ -1,12 +1,15 @@
 import sqlite3
 import bcrypt
-# import re
+import re
 import Encryption
 import LoginUI
 import Login
 import datetime
 import ManageTraveller
 import ManageAdmin
+import Logs
+import Backup
+
 
 
 
@@ -87,18 +90,18 @@ import ManageAdmin
     # )     
     # conn.commit()
     # cursor = conn.cursor()         
-#    cursor.execute("""
-#    CREATE TABLE IF NOT EXISTS logs (
-#        id INTEGER PRIMARY KEY AUTOINCREMENT,
-#        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-#        user_id INTEGER,
-#        action TEXT,
-#        details TEXT,
-#        is_suspicious INTEGER DEFAULT 0,
-#        is_read INTEGER DEFAULT 0
-#    )
-#    """
-#    )
+    # cursor.execute("""
+    # CREATE TABLE IF NOT EXISTS logs (
+    #     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    #     user_id INTEGER,
+    #     action TEXT,
+    #     details TEXT,
+    #     is_suspicious INTEGER DEFAULT 0,
+    #     is_read INTEGER DEFAULT 0
+    # )
+    # """
+    # )
 #
 #    conn.commit()
 #    conn.close()
