@@ -5,7 +5,7 @@ import time
 import ServiceEngineerLogic
 import datetime
 import ManageAdmin
-import Login
+import Backup
 import Logs
 import ManageScooter
 import ManageTraveller
@@ -140,19 +140,16 @@ def service_engineer_beheer():
         print("1. Engineer toevoegen")
         print("2. Engineer profiel bijwerken")
         print("3. Engineer verwijderen")
-        print("4. Wachtwoord resetten")
-        print("5. Terug naar hoofdmenu")
+        print("4. Terug naar hoofdmenu")
 
         keuze = input("Maak een keuze (1-5): ")
         if keuze == "1":
-            Engineer.add_engineer()
+            ManageAdmin.AddAdmin()
         elif keuze == "2":
-            Engineer.update_engineer()
+            ManageAdmin.update_acc()
         elif keuze == "3":
-            Engineer.delete_engineer()
+            ManageAdmin.delete_entry_by_id()
         elif keuze == "4":
-            Engineer.reset_password()
-        elif keuze == "5":
             break
         else:
             input("Ongeldige keuze. Druk op Enter.")
@@ -169,11 +166,11 @@ def backup_logs_menu():
 
         keuze = input("Maak een keuze (1-4): ")
         if keuze == "1":
-            Backup.make_backup()
+            Backup.backup_database()
         elif keuze == "2":
-            Backup.restore_with_code()
+            Backup.restore_database_from_backup()
         elif keuze == "3":
-            Logs.show_logs()
+            Logs.get_all_logs()
         elif keuze == "4":
             break
         else:
