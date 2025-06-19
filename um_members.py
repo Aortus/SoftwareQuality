@@ -14,7 +14,7 @@ import Backup
 
 
 # === Setup database ===
-# def SetupDB():
+#def SetupDB():
 #     conn = sqlite3.connect("SQDB.db")
 #     cursor = conn.cursor()
 #     cursor.execute("""
@@ -102,9 +102,8 @@ import Backup
     # )
     # """
     # )
-#
-#    conn.commit()
-#    conn.close()
+    # conn.commit()
+    # conn.close()
     # conn = sqlite3.connect("SQDB.db")
     # cursor = conn.cursor()
     # enc_username2 = Encryption.encrypt_data("service_engineer")
@@ -126,7 +125,7 @@ import Backup
     # cursor = conn.cursor()
     # enc_brand = Encryption.encrypt_data("Xiaomi")
     # enc_model = Encryption.encrypt_data("M365")
-    # enc_serialnumber = Encryption.encrypt_data("XIA123456789")
+    # enc_serialnumber = Encryption.encrypt_data("XIA1234567890")
     # enc_topspeed = Encryption.encrypt_data("25")
     # enc_batterycapacity = Encryption.encrypt_data("5000")
     # enc_stateofcharge = Encryption.encrypt_data("100")
@@ -144,10 +143,30 @@ import Backup
     # conn.commit()
     # conn.close()
 
+    # conn = sqlite3.connect("SQDB.db")
+    # cursor = conn.cursor()
+    # enc_username2 = Encryption.encrypt_data("system_admin")
+    # enc_firstname2 = Encryption.encrypt_data("system")
+    # enc_lastname2 = Encryption.encrypt_data("admin")
+    # enc_admintype2 = Encryption.encrypt_data("System Administrator")
+    # hashed2 = bcrypt.hashpw("SystemAd".encode(), bcrypt.gensalt())
+    # enc_registration_date2 = Encryption.encrypt_data(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    # try:
+    #     cursor.execute("INSERT INTO admins (username, password_hash, firstname, lastname, registration_date, admin_type) VALUES (?, ?, ?, ?, ?, ?)", 
+    #                    (enc_username2, hashed2, enc_firstname2, enc_lastname2, enc_registration_date2, enc_admintype2))
+    #     print("System Admin user created successfully.")
+    # except sqlite3.IntegrityError:
+    #     print("System Admin user already exists.")
+
+    # conn.commit()
+    # conn.close()
+
     
 if __name__ == "__main__":
-    # SetupDB()
+    #SetupDB()
     LoginUI.login_screen()
 
-    # ServiceEngineer Login: service_engineer / ServiceEng ? Service_Engineer123?
+    # ServiceEngineer Login: service_engineer / ServiceEng    ???????? Service_Engineer123?
     # Admin Login: super_admin / Admin_123?
+    # SystemAdmin Login: system_admin / SystemAd

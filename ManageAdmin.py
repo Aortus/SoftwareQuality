@@ -3,6 +3,7 @@ import bcrypt
 import Login
 import datetime
 import Encryption
+from time import sleep
 
 def get_all_admins():
     conn = sqlite3.connect("SQDB.db")
@@ -33,11 +34,12 @@ def update_acc(username):
     cursor = conn.cursor()
 
     change = input(
-        "Wat wilt u veranderen aan het account?\n"
+        "\nWat wilt u veranderen aan het account?\n"
         "1. Naam\n"
         "2. Username\n"
         "3. Wachtwoord\n"
         "4. Verwijderen\n"
+        "5. Terug\n"
         "Keuze: "
     ).lower()
 
@@ -54,6 +56,7 @@ def update_acc(username):
             )
             conn.commit()
             print(f"Voornaam gewijzigd naar: {new_firstname}")
+            sleep(1)
 
         elif choice in ("2", "achternaam", "achter"):
             new_lastname = input("Voer de nieuwe achternaam in (type Q om te stoppen): ")
@@ -113,8 +116,11 @@ def update_acc(username):
                 delete_entry_by_id(row[0]) 
             else:
                 return None
-        else:
-            print("Ongeldige keuze.")
+    elif change in ("5", "terug"):
+        print("Terug naar het hoofdmenu.")
+        return
+    else:
+        print("Ongeldige keuze.")
 
     conn.close()
 
@@ -152,3 +158,11 @@ def delete_entry_by_id(table_name, entry_id):
     conn.close()
 
     return f"Account met {entry_id} verwijderd van '{table_name}'."
+
+def get_id_by_username(username):
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM admins WHERE username = ?", (username,))
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else None
