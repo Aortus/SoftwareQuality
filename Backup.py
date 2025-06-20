@@ -77,7 +77,7 @@ def restore_database_from_password(backup_file, password):
     if not Encryption.check_password(password_hash, password):
         print("Ongeldig wachtwoord voor back-up herstel.")
         backup.close()
-        return
+        return "Ongeldig wachtwoord"
 
     backup.close()
 

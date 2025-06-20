@@ -11,7 +11,6 @@ import SuperAdminUI
 
 def get_admin_type(username):
     admins = ManageAdmin.get_all_admins()
-    print(admins)
     for admin in admins:
         if admin[1] == username:
             return admin[6]
@@ -70,7 +69,7 @@ def system_admin_menu(username):
 
         keuze = input("\nMaak een keuze (1-7): ")
         if keuze == "1":
-            ManageAdmin.update_own_acc(username)
+            username = ManageAdmin.update_own_acc(username)
         elif keuze == "2":
             SystemAdminUI.scooter_beheer()
         elif keuze == "3":
@@ -132,7 +131,7 @@ def super_admin_menu(username):
         elif keuze == "5":
             SuperAdminUI.system_admin_beheer()
         elif keuze == "6":
-            SystemAdminUI.backup_logs_menu()
+            SuperAdminUI.backup_beheer(username)
         elif keuze == "7":
             ManageAdmin.print_all_admins()
             input("Druk op Enter om terug te keren naar het menu...")

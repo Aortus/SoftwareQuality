@@ -254,7 +254,7 @@ def update_own_acc(username):
 
     if Login.has_null_byte(change):
         print("Ongeldige invoer. Probeer het opnieuw.")
-        return
+        return username  # ⚠️ Return old username if invalid
 
     if change in ("1", "naam"):
         choice = input("Welke naam wilt u veranderen? (1. Voornaam / 2. Achternaam): ").lower()
@@ -262,7 +262,7 @@ def update_own_acc(username):
             new_firstname = input("Voer de nieuwe voornaam in (type Q om te stoppen): ")
             if new_firstname.lower() == "q":
                 print("Wijzigen afgebroken.")
-                return
+                return username
             cursor.execute(
                 "UPDATE admins SET firstname = ? WHERE username = ?",
                 (new_firstname, username)
@@ -276,7 +276,7 @@ def update_own_acc(username):
             new_lastname = input("Voer de nieuwe achternaam in (type Q om te stoppen): ")
             if new_lastname.lower() == "q":
                 print("Wijzigen afgebroken.")
-                return
+                return username
             cursor.execute(
                 "UPDATE admins SET lastname = ? WHERE username = ?",
                 (new_lastname, username)
@@ -287,21 +287,33 @@ def update_own_acc(username):
             input("Druk op Enter om terug te gaan.")
 
     elif change in ("2", "username"):
-        new_username = ""
         while True:
             new_username = input("Wat moet de nieuwe username worden? (type Q om te stoppen): ")
             if new_username.lower() == "q":
                 print("Wijzigen afgebroken.")
-                break
-            if(Login.is_valid_username(new_username)):
+                conn.close()
+                return username
+            if Login.is_valid_username(new_username):
+                admins = get_all_admins()
+                for admin in admins:
+                    if admin[1] == username:
+                        conn = sqlite3.connect("SQDB.db")
+                        cursor = conn.cursor()
+                        adminid = admin[0]
+                enc_new_username = Encryption.encrypt_data(new_username)
                 cursor.execute(
-                    "UPDATE admins SET username = ? WHERE username = ?",
-                    (new_username, username)
+                    "UPDATE admins SET username = ? WHERE id = ?",
+                    (enc_new_username, adminid)
                 )
                 conn.commit()
                 print(f"Username gewijzigd naar: {new_username}")
                 Logs.log_activity(username, "Username Change", f"username gewijzigd van {username} naar: {new_username}", 0)
-                break
+                sleep(1)
+                conn.close()
+                return new_username
+            else:
+                print("Ongeldige username. Probeer het opnieuw.")
+
 
     elif change in ("3", "wachtwoord"):
         new_password = input("Nieuw wachtwoord: ")
@@ -310,7 +322,7 @@ def update_own_acc(username):
             input("Wachtwoord succesvol gewijzigd. Druk op Enter om terug te keren.")
         else:
             input("Ongeldig wachtwoord. Zorg ervoor dat het minstens 12 tekens lang is, een hoofdletter, een kleine letter, een cijfer en een speciaal teken bevat. Druk op Enter om opnieuw te proberen.")
-    
+
     elif change in ("4", "verwijderen"):
         print("Weet u zeker dat u dit account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")
         confirm = input("Typ 'ja' om te bevestigen: ").strip().lower()
@@ -320,3 +332,10 @@ def update_own_acc(username):
             print("Account succesvol verwijderd.")
             input("Druk op Enter om terug te keren naar het inlogscherm.")
             LoginUI.login_screen()
+            return None
+    elif change in ("5", "terug", "q"):
+        print("Terug naar het hoofdmenu.")
+        return username
+    else:
+        print("Ongeldige keuze.")
+        return username
