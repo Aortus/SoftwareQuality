@@ -2,6 +2,7 @@ import Encryption
 import sqlite3
 
 def log_activity(username, action, details, is_suspicious=0):
+    encrypted_username = Encryption.encrypt_data(username)
     encrypted_action = Encryption.encrypt_data(action)
     encrypted_details = Encryption.encrypt_data(details)
     conn = sqlite3.connect("SQDB.db")
@@ -9,7 +10,7 @@ def log_activity(username, action, details, is_suspicious=0):
     cursor.execute("""
         INSERT INTO logs (user_id, action, details, is_suspicious)
         VALUES (?, ?, ?, ?)
-    """, (username, encrypted_action, encrypted_details, is_suspicious))
+    """, (encrypted_username, encrypted_action, encrypted_details, is_suspicious))
     conn.commit()
     conn.close()
 
@@ -30,7 +31,7 @@ def get_unread_logs():
         decrypted.append((
             row[0],  # id
             row[1],  # timestamp
-            row[2],  # user_id
+            Encryption.decrypt_data(row[2]),  # user_id
             Encryption.decrypt_data(row[3]),  # action
             Encryption.decrypt_data(row[4]),  # details
             "suspicious" if row[5] == 1 else "safe",  # is_suspicious
@@ -60,7 +61,7 @@ def get_all_logs():
         decrypted.append((
             row[0],  # id
             row[1],  # timestamp
-            row[2],  # user_id
+            Encryption.decrypt_data(row[2]),  # user_id
             Encryption.decrypt_data(row[3]),  # action
             Encryption.decrypt_data(row[4]),  # details
             "suspicious" if row[5] == 1 else "safe",  # is_suspicious
