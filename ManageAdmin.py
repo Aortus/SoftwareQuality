@@ -142,6 +142,31 @@ def update_acc(username):
 
     conn.close()
 
+def change_password(username):
+    admins = get_all_admins()
+    for admin in admins:
+        if admin[1] == username:
+            conn = sqlite3.connect("SQDB.db")
+            cursor = conn.cursor()
+            adminid = admin[0]
+            new_password = input("Voer nieuw wachtwoord in (type Q om te stoppen): ")
+            if(Login.is_valid_password(new_password)):
+                hashed_pw = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
+                cursor.execute(
+                    "UPDATE admins SET password_hash = ? WHERE id = ?",
+                    (hashed_pw, adminid)
+                )
+                conn.commit()
+                print("Wachtwoord gewijzigd.")
+                Logs.log_activity(username, "Password change", f"Wachtwoord gereset van {username}", 0)
+                sleep(5)
+            elif new_password.lower() == "q":
+                print("Wijzigen afgebroken.")
+            else:
+                print("Ongeldig wachtwoord. Probeer het opnieuw.")
+            conn.close()
+            return
+
 def AddAdmin(): 
     go_on = ""
     while go_on.lower() != "q":
