@@ -68,7 +68,6 @@ def update_traveller(role):
         input("Traveller niet gevonden. Druk op Enter om terug te keren.")
         return
 
-    # Define which indexes can be edited
     if role.lower() in ["super administrator", "system administrator"]:
         # indexes based on your INSERT: (id=0, registration_date=1, firstname=2, lastname=3, ...)
         editable_fields = list(range(2, 13))  # allow editing all except id and registration_date
@@ -91,16 +90,26 @@ def update_traveller(role):
 
             if idx == 2:
                 traveller_found[2] = input("Nieuwe voornaam: ")
+                if not is_valid_name(traveller_found[2]):
+                    raise ValueError("Ongeldige voornaam. Gebruik alleen letters en spaties.")
             elif idx == 3:
                 traveller_found[3] = input("Nieuwe achternaam: ")
+                if not is_valid_name(traveller_found[3]):
+                    raise ValueError("Ongeldige achternaam. Gebruik alleen letters en spaties.")
             elif idx == 4:
                 traveller_found[4] = input("Nieuwe geboortedatum (YYYY-MM-DD): ")
+                try:
+                    datetime.datetime.strptime(traveller_found[4], "%Y-%m-%d")
+                except ValueError:
+                    raise ValueError("Ongeldige geboortedatum. Gebruik het formaat YYYY-MM-DD.")
             elif idx == 5:
                 traveller_found[5] = input("Nieuw geslacht: ")
             elif idx == 6:
                 traveller_found[6] = input("Nieuwe straatnaam: ")
             elif idx == 7:
                 traveller_found[7] = input("Nieuw huisnummer: ")
+                if not traveller_found[8].isdigit:
+                    raise ValueError("Ongeldige huisnummer.")
             elif idx == 8:
                 traveller_found[8] = input("Nieuwe postcode: ")
                 if not is_valid_zipcode(traveller_found[8]):
@@ -150,30 +159,49 @@ def update_traveller(role):
         except Exception as e:
             input(f"Fout: {e}\nDruk op Enter om opnieuw te proberen.")
 
+def is_valid_name(name):
+    if has_null_byte(name):
+        return False
+    pattern = r"^[A-Za-z\s]+$"
+    return re.match(pattern, name) is not None and len(name) > 0
+
 def is_valid_zipcode(zc):
+    if has_null_byte(zc):
+        return False
     pattern = r"^\d{4}[A-Za-z]{2}$"
     return re.match(pattern, zc) is not None
 
 def is_valid_city(city):
+    if has_null_byte(city):
+        return False
     if city in ("Amsterdam", "Rotterdam", "Barendrecht", "Utrecht", "Eindhoven", "Tilburg", "Groningen", "Almere", "Breda", "Nijmegen"):
         return True
     return False
 
 def is_valid_nl_mobile(number): #Only enter the number, without the +31 or 06
     pattern = r"^\d{8}$"
+    if has_null_byte(number):
+        return False
     return re.match(pattern, number) is not None
 
 def is_valid_license(s):
     pattern = r"^([A-Za-z]{2}\d{7}|[A-Za-z]{1}\d{8})$"
+    if has_null_byte(s):
+        return False
     return re.match(pattern, s) is not None
 
 def is_valid_email(email):
+    if has_null_byte(email):
+        return False
     travellers = get_all_travellers()
     for traveller in travellers:
         if traveller[9] == email:
             return False
         
     return True if re.match(r"[^@]+@[^@]+\.[^@]+", email) else False
+
+def has_null_byte(s):
+    return '\x00' in s
 
 def get_all_travellers():
     conn = sqlite3.connect("SQDB.db")
@@ -214,11 +242,4 @@ def search_traveller(search_term): # print(ManageTraveller.search_traveller("joh
         return filtered_travellers
     else:
         return "Geen traveller gevonden met deze zoekterm"
-
-    
-     
-
-# travellers = ManageTraveller.get_all_travellers()
-# for traveller in travellers:
-#     print(traveller)
 

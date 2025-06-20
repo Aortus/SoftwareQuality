@@ -61,7 +61,10 @@ def is_valid_username(UN):
     username = UN.lower()
     if len(username) < 7 or len(username) > 10: #Length
         return False
-    
+    if username.startswith("temp"):
+        return False
+    if has_null_byte(username):
+        return False
     if re.match(r'^[A-Za-z_][A-Za-z0-9_\'\.]*$', username): #mathes the regex to the requirements
         return True
     else:
@@ -80,4 +83,9 @@ def is_valid_password(password):
         return False
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password): #Special char
         return False
+    if has_null_byte(password): #Null byte
+        return False
     return True
+
+def has_null_byte(input_str):
+    return '\x00' in input_str

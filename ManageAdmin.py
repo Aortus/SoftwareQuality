@@ -43,6 +43,10 @@ def update_acc(username):
         "Keuze: "
     ).lower()
 
+    if Login.has_null_byte(change):
+        print("Ongeldige invoer. Probeer het opnieuw.")
+        return
+
     if change in ("1", "naam"):
         choice = input("Welke naam wilt u veranderen? (1. Voornaam / 2. Achternaam): ").lower()
         if choice in ("1", "voornaam", "voor"):
@@ -116,7 +120,7 @@ def update_acc(username):
                 delete_entry_by_id(row[0]) 
             else:
                 return None
-    elif change in ("5", "terug"):
+    elif change in ("5", "terug", "q"):
         print("Terug naar het hoofdmenu.")
         return
     else:
@@ -124,7 +128,7 @@ def update_acc(username):
 
     conn.close()
 
-def AddAdmin():
+def AddAdmin(): 
     go_on = ""
     while go_on.lower() != "q":
         new_username = input("Voer de nieuwe username in: ")

@@ -103,11 +103,20 @@ def update_scooter_attributes(role):
                 raise ValueError(f"Toegang geweigerd. Je mag alleen de velden {editable_fields} bewerken.")
 
             if idx == 2:
-                found_scooter[1] = input("Nieuw merk: ")
+                merk = input("Nieuw merk: ")
+                if has_null_byte(merk):
+                    raise ValueError("Merk mag geen null bytes bevatten.")
+                found_scooter[1] = merk.strip()
             elif idx == 3:
-                found_scooter[2] = input("Nieuw model: ")
+                model = input("Nieuw model: ")
+                if has_null_byte(model):
+                    raise ValueError("Model mag geen null bytes bevatten.")
+                found_scooter[2] = model.strip()
             elif idx == 4:
-                found_scooter[3] = input("Nieuw serienummer: ")
+                serienummer = input("Nieuw serienummer: ")
+                if has_null_byte(serienummer):
+                    raise ValueError("Serienummer mag geen null bytes bevatten.")
+                found_scooter[3] = serienummer.strip()
             elif idx == 5:
                 topspeed = int(input("Nieuwe topsnelheid (km/h): "))
                 if topspeed <= 0:
@@ -130,12 +139,16 @@ def update_scooter_attributes(role):
                 found_scooter[7] = str(target_soc)
             elif idx == 9:
                 location = input("Nieuwe locatie (bijv: 51.91,4.44): ")
+                if has_null_byte(location):
+                    raise ValueError("Locatie mag geen null bytes bevatten.")
                 lat, lon = map(float, location.split(','))
                 if not (51.8 <= lat <= 52.0 and 4.3 <= lon <= 4.6):
                     raise ValueError("Locatie moet binnen Rotterdam vallen.")
                 found_scooter[8] = location
             elif idx == 10:
                 out = input("Out-of-Service? (ja/nee): ").strip().lower()
+                if has_null_byte(out):
+                    raise ValueError("Input mag geen null bytes bevatten.")
                 if out not in ["ja", "nee"]:
                     raise ValueError("Alleen 'ja' of 'nee' toegestaan.")
                 found_scooter[9] = "1" if out == "ja" else "0"
@@ -146,9 +159,11 @@ def update_scooter_attributes(role):
                 found_scooter[10] = str(mileage)
             elif idx == 12:
                 date_str = input("Laatste onderhoudsdatum (YYYY-MM-DD): ")
+                if has_null_byte(date_str):
+                    raise ValueError("Datum mag geen null bytes bevatten.")
                 maintenance_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
                 found_scooter[11] = maintenance_date.strftime("%Y-%m-%d")
-
+            
             encrypted = [Encryption.encrypt_data(str(v)).decode() if i != 0 else v for i, v in enumerate(found_scooter)]
 
             conn = sqlite3.connect("SQDB.db")
@@ -200,3 +215,6 @@ def delete_scooter():
         input("Scooter succesvol verwijderd. Druk op Enter om verder te gaan.")
     else:
         input("Verwijderen geannuleerd. Druk op Enter om terug te keren.")
+
+def has_null_byte(s):
+    return '\x00' in s
