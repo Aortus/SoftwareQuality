@@ -32,7 +32,6 @@ def register(username, password, firstname, lastname, admintype):
     
 def login(username, password):
     admins = ManageAdmin.get_all_admins()
-    print(admins)
     for admin in admins:
         if admin[1] == username and bcrypt.checkpw(password.encode(), admin[2]):
             if password.startswith("temp"):
