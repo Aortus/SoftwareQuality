@@ -140,7 +140,7 @@ def traveller_beheer(username):
             email = input("E-mailadres: ")
             print("Let op: Telefoonnummer moet een geldig nummer zijn, zonder '06' of '+31 6' , bijv. '12345678'.")
             mobilephone = input("Mobiele telefoon: ")
-            print("Let op: Rijbewijs moet een geldig nummer zijn, bijv. 'A123456789'.")
+            print("Let op: Rijbewijs moet een geldig nummer zijn (2 letters en 7 cijfers of 1 letter en 8 cijfers vereist).")
             drivinglicense = input("Rijbewijs: ").strip().lower()
 
             result = ManageTraveller.register_traveller(firstname, lastname, birthdate, gender, streetname, streetnumber, zipcode, city, email, mobilephone, drivinglicense)

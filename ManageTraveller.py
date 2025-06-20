@@ -49,12 +49,12 @@ def print_traveller_info(traveller):
         f"3. Achternaam: {traveller[3]}\n"
         f"4. Geboortedatum: {traveller[4]}\n"
         f"5. Geslacht: {traveller[5]}\n"
-        f"6. Straat naam: {traveller[6]}\n" 
-        f"7. Huis nummer: {traveller[7]}\n"
+        f"6. Straatnaam: {traveller[6]}\n" 
+        f"7. Huisnummer: {traveller[7]}\n"
         f"8. Postcode: {traveller[8]}\n" 
         f"9. Plaats: {traveller[9]}\n"
         f"10. Email: {traveller[10]}\n"
-        f"11. Mobiel nummer: {traveller[11]}\n"
+        f"11. Mobielnummer: {traveller[11]}\n"
         f"12. Rijbewijs: {traveller[12]}\n"
     )
     
