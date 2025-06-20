@@ -4,6 +4,7 @@ import Login
 import datetime
 import Encryption
 from time import sleep
+import Logs
 
 def get_all_admins():
     conn = sqlite3.connect("SQDB.db")
@@ -60,6 +61,7 @@ def update_acc(username):
             )
             conn.commit()
             print(f"Voornaam gewijzigd naar: {new_firstname}")
+            Logs.log_activity(username, "Name Change", f"Voornaam gewijzigd naar: {new_firstname}", 0)
             sleep(1)
 
         elif choice in ("2", "achternaam", "achter"):
@@ -73,6 +75,7 @@ def update_acc(username):
             )
             conn.commit()
             print(f"Achternaam gewijzigd naar: {new_lastname}")
+            Logs.log_activity(username, "Name Change", f"Achternaam gewijzigd naar: {new_lastname}", 0)
 
     elif change in ("2", "username"):
         new_username = ""
@@ -88,6 +91,7 @@ def update_acc(username):
                 )
                 conn.commit()
                 print(f"Username gewijzigd naar: {new_username}")
+                Logs.log_activity(username, "Username Change", f"username gewijzigd van {username} naar: {new_username}", 0)
                 break
 
     elif change in ("3", "wachtwoord"):
@@ -103,6 +107,11 @@ def update_acc(username):
                 )
                 conn.commit()
                 print("Wachtwoord gewijzigd.")
+                print("Let op: Dit is een tijdelijk wachtwoord, u moet het later wijzigen.")
+                print(new_password)
+                Logs.log_activity(username, "Password change", f"Wachtwoord gereset van {username}", 0)
+
+                sleep(5)
                 
             elif new_password.lower() == "q":
                 print("Wijzigen afgebroken.")
@@ -118,8 +127,13 @@ def update_acc(username):
 
             if row:
                 delete_entry_by_id(row[0]) 
+                Logs.log_activity(username, "Account verwijderd", f"Account van {username} gewijzigd", 0)
+
             else:
+                Logs.log_activity(username, "Account verwijderen gefaald", f"{username} geprobeerd om account te verwijderen", 1)
                 return None
+                
+
     elif change in ("5", "terug", "q"):
         print("Terug naar het hoofdmenu.")
         return
@@ -142,10 +156,12 @@ def AddAdmin():
             new_admintype = "Service Engineer"
         else:
             print("Ongeldige admin type. Probeer het opnieuw.")
+            Logs.log_activity(new_username, "Admin toevoegen gefaald", "Ongeldige admin type ingevoerd", 1)
             go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
 
         if (Login.register(new_username, new_password, new_firstname, new_lastname, new_admintype) != "Admin succesfully registered"):
             print("Er is iets fout gegaan bij het toevoegen van de admin. Probeer het opnieuw.")
+            Logs.log_activity(new_username, "Admin toevoegen gefaald", "Er is iets fout gegaan bij het toevoegen van de admin", 1)
             go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
         
         else:
