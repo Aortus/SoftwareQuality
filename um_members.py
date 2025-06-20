@@ -14,7 +14,7 @@ import Backup
 
 
 # === Setup database ===
-#def SetupDB():
+def SetupDB():
 #     conn = sqlite3.connect("SQDB.db")
 #     cursor = conn.cursor()
 #     cursor.execute("""
@@ -66,29 +66,37 @@ import Backup
 #     conn.commit()
 #     conn.close()
 
-    # conn = sqlite3.connect("SQDB.db")
-    # cursor = conn.cursor()
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
 
-    # cursor.execute("DROP TABLE IF EXISTS scooters")
+    cursor.execute("DROP TABLE IF EXISTS scooters")
 
-    # cursor.execute("""
-    # CREATE TABLE IF NOT EXISTS scooters (
-    #     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #     brand TEXT,
-    #     model TEXT,
-    #     serialnumber TEXT UNIQUE,
-    #     topspeed INTEGER,
-    #     batterycapacity INTEGER,
-    #     stateofcharge INTEGER,
-    #     targetstateofcharge INTEGER,
-    #     location TEXT,
-    #     outofservice BOOLEAN,
-    #     mileage INTEGER,
-    #     lastmaintenance DATETIME
-    # )
-    # """
-    # )     
-    # conn.commit()
+    conn.commit()
+    conn.close()
+
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS scooters (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        brand TEXT,
+        model TEXT,
+        serialnumber TEXT UNIQUE,
+        topspeed INTEGER,
+        batterycapacity INTEGER,
+        stateofcharge INTEGER,
+        targetstateofcharge INTEGER,
+        location TEXT,
+        outofservice BOOLEAN,
+        mileage INTEGER,
+        lastmaintenance DATETIME
+        inservicedate DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+    """
+    )    
+    conn.commit()
+    conn.close()
     # cursor = conn.cursor()         
     # cursor.execute("""
     # CREATE TABLE IF NOT EXISTS logs (
