@@ -29,17 +29,17 @@ def print_scooter_info(scooter):
     print(
         f"\nScooter Informatie:\n"
         f"1. ID: {scooter[0]}\n"
-        f"2. Brand: {scooter[1]}\n"
+        f"2. Merk: {scooter[1]}\n"
         f"3. Model: {scooter[2]}\n"
-        f"4. Serialnumber: {scooter[3]}\n"
-        f"5. Topspeed: {scooter[4]} km/h\n"
-        f"6. Batterycapacity: {scooter[5]} km\n"
-        f"7. State Of Charge: {scooter[6]}\n"
-        f"8. Target State Of Charge: {scooter[7]}\n"
-        f"9. Location: {scooter[8]}\n"
-        f"10. Out of Service: {'Ja' if scooter[9] == '1' else 'Nee'}\n"
-        f"11. Mileage: {scooter[10]} km\n"
-        f"12. Last Maintenance: {scooter[11]}\n"
+        f"4. Serienummer: {scooter[3]}\n"
+        f"5. Topsnelheid: {scooter[4]} km/h\n"
+        f"6. Batterijcapaciteit: {scooter[5]} Ah\n"
+        f"7. Laadniveau: {scooter[6]}\n"
+        f"8. Doel-Laadniveau: {scooter[7]}\n"
+        f"9. Locatie: {scooter[8]}\n"
+        f"10. Buiten Gberuik: {'Ja' if scooter[9] == '1' else 'Nee'}\n"
+        f"11. Kilometerstand: {scooter[10]} km\n"
+        f"12. Laatste Onderhoudsbeurt: {scooter[11]}\n"
     )
 
 def add_scooter(brand, model, serialnumber, topspeed, batterycapacity, stateofcharge, targetstateofcharge, location, outofservice, mileage, lastmaintenance):
@@ -64,9 +64,9 @@ def add_scooter(brand, model, serialnumber, topspeed, batterycapacity, stateofch
             (encrypted_brand, encrypted_model, encrypted_serialnumber, encrypted_topspeed, encrypted_batterycapacity, encrypted_stateofcharge, encrypted_targetstateofcharge, encrypted_location, encrypted_outofservice, encrypted_mileage, encrypted_lastmaintenance)
         )
         conn.commit()
-        return "Scooter successfully added"
+        return "Scooter succesvol toegevoegd."
     except sqlite3.Error as e:
-        return f"Error adding scooter: {e}"
+        return f"Fout bij het toevoegen van de scooter: {e}"
     finally:
         conn.close()
 

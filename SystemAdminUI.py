@@ -58,19 +58,19 @@ def scooter_beheer():
                 if topspeed <= 0:
                     raise ValueError("Topsnelheid moet positief zijn.")
 
-                batterycapacity = int(input("Batterijcapaciteit (km): "))
+                batterycapacity = int(input("Batterijcapaciteit (Ah): "))
                 if batterycapacity <= 0:
                     raise ValueError("Batterijcapaciteit moet positief zijn.")
 
-                stateofcharge = int(input("Huidige lading (%): "))
+                stateofcharge = int(input("Huidige Laadniveau (%): "))
                 if not 0 <= stateofcharge <= 100:
-                    raise ValueError("State of Charge moet tussen 0 en 100 zijn.")
+                    raise ValueError("Laadniveau moet tussen 0 en 100 zijn.")
 
                 targetstateofcharge = int(input("Doellading (%): "))
                 if not 0 <= targetstateofcharge <= 100:
-                    raise ValueError("Target State of Charge moet tussen 0 en 100 zijn.")
+                    raise ValueError("Doel-Laadniveau moet tussen 0 en 100 zijn.")
 
-                location = input("Locatie (bijv: 51.91,4.44): ")
+                location = input("Voer locatie in (latitude,longitude — bijv: 51.91,4.44): ")
                 lat, lon = map(float, location.split(','))
                 if not (51.8 <= lat <= 52.0 and 4.3 <= lon <= 4.6):
                     raise ValueError("Locatie moet binnen Rotterdam vallen.")
@@ -84,7 +84,7 @@ def scooter_beheer():
                 if mileage < 0:
                     raise ValueError("Kilometerstand mag niet negatief zijn.")
 
-                lastmaintenance = input("Laatste onderhoudsdatum (YYYY-MM-DD): ")
+                lastmaintenance = input("Laatste onderhoudsbeurt (YYYY-MM-DD): ")
                 datetime.datetime.strptime(lastmaintenance, "%Y-%m-%d")
 
                 msg = ManageScooter.add_scooter(
