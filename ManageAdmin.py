@@ -215,3 +215,14 @@ def get_id_by_username(username):
     result = cursor.fetchone()
     conn.close()
     return result[0] if result else None
+
+def get_admin_by_username(username):
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, admin_type FROM admins WHERE username = ?", (username,))
+    result = cursor.fetchone()
+    conn.close()
+    if result:
+        return {"id": result[0], "admin_type": result[1]}
+    else:
+        return None

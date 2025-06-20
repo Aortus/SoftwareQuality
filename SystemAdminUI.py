@@ -172,9 +172,22 @@ def service_engineer_beheer():
         if keuze == "1":
             ManageAdmin.AddAdmin()
         elif keuze == "2":
-            ManageAdmin.update_acc()
+            username = input("Voer de username van de Service Engineer in die je wilt bijwerken: ")
+            ManageAdmin.update_acc(username)
         elif keuze == "3":
-            ManageAdmin.delete_entry_by_id()
+            username = input("Voer de username van de Service Engineer in die je wilt verwijderen: ").strip()
+            admin = ManageAdmin.get_admin_by_username(username)
+            if not admin:
+                input("Gebruiker niet gevonden. Druk op Enter om terug te keren.")
+            elif admin['admin_type'] != "Service Engineer":
+                input("Deze gebruiker is geen Service Engineer. Verwijderen niet toegestaan. Druk op Enter om terug te keren.")
+            else:
+                confirm = input(f"Weet je zeker dat je Service Engineer '{username}' wilt verwijderen? (ja/nee): ").strip().lower()
+                if confirm == "ja":
+                    msg = ManageAdmin.delete_entry_by_id("admins", admin['id'])
+                    input(msg + " Druk op Enter om terug te keren.")
+                else:
+                    input("Verwijderen geannuleerd. Druk op Enter om terug te keren.")
         elif keuze == "4":
             break
         else:
