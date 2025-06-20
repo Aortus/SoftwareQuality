@@ -138,14 +138,19 @@ def traveller_beheer(username):
             zipcode = input("Postcode: ")
             city = input("Woonplaats: ")
             email = input("E-mailadres: ")
+            print("Let op: Telefoonnummer moet een geldig nummer zijn, zonder '06' of '+31 6' , bijv. '12345678'.")
             mobilephone = input("Mobiele telefoon: ")
+            print("Let op: Rijbewijs moet een geldig nummer zijn, bijv. 'A123456789'.")
             drivinglicense = input("Rijbewijs: ").strip().lower()
 
             result = ManageTraveller.register_traveller(firstname, lastname, birthdate, gender, streetname, streetnumber, zipcode, city, email, mobilephone, drivinglicense)
             if result.startswith("Traveller successfully registered"):
                 Logs.log_activity(username, "Traveller registratie", f"{firstname} {lastname} geregistreerd", 0)
+                input(f"Traveller toegevoegd. Druk op Enter om verder te gaan.")
+            else:
+                input(f"Fout bij registratie: Druk op Enter om opnieuw te proberen.")
         elif keuze == "2":
-            ManageTraveller.update_traveller()
+            ManageTraveller.update_traveller(role="System Administrator")
         elif keuze == "3":
             email = input("Voer het e-mailadres van de traveller in die u wilt verwijderen: ")
             print("Weet u zeker dat u deze traveller wilt verwijderen?")

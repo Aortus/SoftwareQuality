@@ -3,6 +3,7 @@ import sqlite3
 import Encryption
 import datetime
 import ManageAdmin
+import os
 
 
 # ManageTraveller.register_traveller("John", "Doe", "10-05-1990", "M", "Wijnhaven", "109", "3011WN", "Rotterdam", "john@doe.com", "12365487", "A12345678")
@@ -43,11 +44,11 @@ def register_traveller(firstname, lastname, birthdate, gender, streetname, stree
 
 def print_traveller_info(traveller):
     print(
-        f"\nTraveller Informatie:\n"
+        f"Traveller Informatie:\n"
         f"1. Voornaam: {traveller[2]}\n"
         f"2. Achternaam: {traveller[3]}\n"
-        f"3. Geboortedatum: {traveller[4]} km/h\n"
-        f"4. Geslacht: {traveller[5]} km\n"
+        f"3. Geboortedatum: {traveller[4]}\n"
+        f"4. Geslacht: {traveller[5]}\n"
         f"5. Adres: {traveller[6]} {traveller[7]}, {traveller[8]} {traveller[9]}\n"
         f"6. Email: {traveller[10]}\n"
         f"7. Mobiel nummer: {traveller[11]}\n"
@@ -76,6 +77,7 @@ def update_traveller(role):
         return
 
     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print_traveller_info(traveller_found)
         print(f"Bewerkbare velden: {', '.join(map(str, editable_fields))}")
         idx = input("Kies een veld om aan te passen of typ 'q' om terug te keren: ").strip()

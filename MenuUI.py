@@ -77,7 +77,7 @@ def system_admin_menu(username):
         elif keuze == "4":
             SystemAdminUI.service_engineer_beheer()
         elif keuze == "5":
-            SystemAdminUI.backup_logs_menu()
+            SystemAdminUI.backup_logs_menu(username)
         elif keuze == "6":
             ManageAdmin.print_all_admins()
             input("Druk op Enter om terug te keren naar het menu...")
