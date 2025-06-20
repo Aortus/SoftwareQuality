@@ -261,6 +261,10 @@ def update_own_acc(username):
         print("Ongeldige invoer. Probeer het opnieuw.")
         return username
 
+    id = get_id_by_username(username)
+    if id is None:
+        print("Gebruiker niet gevonden.")
+        return username
     if change in ("1", "naam"):
         choice = input("Welke naam wilt u veranderen? (1. Voornaam / 2. Achternaam): ").lower()
         if choice in ("1", "voornaam", "voor"):
@@ -268,9 +272,10 @@ def update_own_acc(username):
             if new_firstname.lower() == "q":
                 print("Wijzigen afgebroken.")
                 return username
+            new_firstname = Encryption.encrypt_data(new_firstname)
             cursor.execute(
-                "UPDATE admins SET firstname = ? WHERE username = ?",
-                (new_firstname, username)
+                "UPDATE admins SET firstname = ? WHERE id = ?",
+                (new_firstname, id)
             )
             conn.commit()
             print(f"Voornaam gewijzigd naar: {new_firstname}")
@@ -283,9 +288,10 @@ def update_own_acc(username):
             if new_lastname.lower() == "q":
                 print("Wijzigen afgebroken.")
                 return username
+            new_lastname = Encryption.encrypt_data(new_lastname)
             cursor.execute(
-                "UPDATE admins SET lastname = ? WHERE username = ?",
-                (new_lastname, username)
+                "UPDATE admins SET lastname = ? WHERE id = ?",
+                (new_lastname, id)
             )
             conn.commit()
             print(f"Achternaam gewijzigd naar: {new_lastname}")
@@ -301,16 +307,10 @@ def update_own_acc(username):
                 conn.close()
                 return username
             if Login.is_valid_username(new_username):
-                admins = get_all_admins()
-                for admin in admins:
-                    if admin[1] == username:
-                        conn = sqlite3.connect("SQDB.db")
-                        cursor = conn.cursor()
-                        adminid = admin[0]
                 enc_new_username = Encryption.encrypt_data(new_username)
                 cursor.execute(
                     "UPDATE admins SET username = ? WHERE id = ?",
-                    (enc_new_username, adminid)
+                    (enc_new_username, id)
                 )
                 conn.commit()
                 print(f"Username gewijzigd naar: {new_username}")
