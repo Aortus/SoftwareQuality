@@ -218,3 +218,24 @@ def delete_scooter():
 
 def has_null_byte(s):
     return '\x00' in s
+
+def search_scooter():
+    query = input("Zoekterm (deel van serienummer, merk, model, etc.): ").strip().lower()
+
+    scooters = get_all_scooters()
+    matches = []
+
+    for scooter in scooters:
+        fields_to_search = [str(s).lower() for s in scooter]
+        if any(query in field for field in fields_to_search):
+            matches.append(scooter)
+
+    if not matches:
+        input("Geen scooters gevonden met die zoekterm. Druk op Enter om terug te keren.")
+        return
+
+    for idx, scooter in enumerate(matches, 1):
+        print(f"\nResultaat {idx}:")
+        print_scooter_info(scooter)
+
+    input("\nDruk op Enter om terug te keren.")

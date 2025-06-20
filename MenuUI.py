@@ -30,7 +30,7 @@ def service_engineer_menu(username):
         elif keuze == "2":
             ManageScooter.update_scooter_attributes(role="Service Engineer")
         elif keuze == "3":
-            ServiceEngineerLogic.search_scooter()
+            ManageScooter.search_scooter()
         elif keuze == "4":
             print("Uitloggen...")
             time.sleep(10)
