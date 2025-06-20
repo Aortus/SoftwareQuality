@@ -34,6 +34,7 @@ def print_all_admins():
 def update_acc(username):
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
+    user_id = get_id_by_username(username)
 
     change = input(
         "\nWat wilt u veranderen aan het account?\n"
@@ -56,9 +57,10 @@ def update_acc(username):
             if new_firstname.lower() == "q":
                 print("Wijzigen afgebroken.")
                 return
+            new_firstname_enc = Encryption.encrypt_data(new_firstname)
             cursor.execute(
-                "UPDATE admins SET firstname = ? WHERE username = ?",
-                (new_firstname, username)
+                "UPDATE admins SET firstname = ? WHERE id = ?",
+                (new_firstname_enc, user_id)
             )
             conn.commit()
             print(f"Voornaam gewijzigd naar: {new_firstname}")
@@ -70,9 +72,10 @@ def update_acc(username):
             if new_lastname.lower() == "q":
                 print("Wijzigen afgebroken.")
                 return
+            new_lastname_enc = Encryption.encrypt_data(new_lastname)
             cursor.execute(
-                "UPDATE admins SET lastname = ? WHERE username = ?",
-                (new_lastname, username)
+                "UPDATE admins SET lastname = ? WHERE id = ?",
+                (new_lastname_enc, user_id)
             )
             conn.commit()
             print(f"Achternaam gewijzigd naar: {new_lastname}")
@@ -86,9 +89,10 @@ def update_acc(username):
                 print("Wijzigen afgebroken.")
                 break
             if(Login.is_valid_username(new_username)):
+                new_username_enc = Encryption.encrypt_data(new_username)
                 cursor.execute(
-                    "UPDATE admins SET username = ? WHERE username = ?",
-                    (new_username, username)
+                    "UPDATE admins SET username = ? WHERE id = ?",
+                    (new_username_enc, user_id)
                 )
                 conn.commit()
                 print(f"Username gewijzigd naar: {new_username}")
@@ -103,8 +107,8 @@ def update_acc(username):
                 new_password = "temp" + new_password
                 hashed_pw = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
                 cursor.execute(
-                    "UPDATE admins SET password_hash = ? WHERE username = ?",
-                    (hashed_pw, username)
+                    "UPDATE admins SET password_hash = ? WHERE id = ?",
+                    (hashed_pw, user_id)
                 )
                 conn.commit()
                 print("Wachtwoord gewijzigd.")
@@ -171,6 +175,7 @@ def change_password(username):
 def AddAdmin(): 
     go_on = ""
     while go_on != "q":
+        print("Let op: De username moet tussen de 7 en 10 karakters lang zijn")
         new_username = input("Voer de nieuwe username in: ")
         new_password = input("Voer het nieuwe wachtwoord in: ")
         new_firstname = input("Voer de voornaam in: ")
@@ -254,7 +259,7 @@ def update_own_acc(username):
 
     if Login.has_null_byte(change):
         print("Ongeldige invoer. Probeer het opnieuw.")
-        return username  # ⚠️ Return old username if invalid
+        return username
 
     if change in ("1", "naam"):
         choice = input("Welke naam wilt u veranderen? (1. Voornaam / 2. Achternaam): ").lower()
@@ -271,6 +276,7 @@ def update_own_acc(username):
             print(f"Voornaam gewijzigd naar: {new_firstname}")
             Logs.log_activity(username, "Name Change", f"Voornaam gewijzigd naar: {new_firstname}", 0)
             input("Druk op Enter om terug te gaan.")
+            return username
 
         elif choice in ("2", "achternaam", "achter"):
             new_lastname = input("Voer de nieuwe achternaam in (type Q om te stoppen): ")
@@ -285,6 +291,7 @@ def update_own_acc(username):
             print(f"Achternaam gewijzigd naar: {new_lastname}")
             Logs.log_activity(username, "Name Change", f"Achternaam gewijzigd naar: {new_lastname}", 0)
             input("Druk op Enter om terug te gaan.")
+            return username
 
     elif change in ("2", "username"):
         while True:
@@ -320,9 +327,10 @@ def update_own_acc(username):
         if Login.is_valid_password(new_password):
             Login.change_password(username, new_password)
             input("Wachtwoord succesvol gewijzigd. Druk op Enter om terug te keren.")
+            return username
         else:
             input("Ongeldig wachtwoord. Zorg ervoor dat het minstens 12 tekens lang is, een hoofdletter, een kleine letter, een cijfer en een speciaal teken bevat. Druk op Enter om opnieuw te proberen.")
-
+            return username
     elif change in ("4", "verwijderen"):
         print("Weet u zeker dat u dit account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")
         confirm = input("Typ 'ja' om te bevestigen: ").strip().lower()

@@ -184,7 +184,10 @@ def service_engineer_beheer():
             ManageAdmin.AddAdmin()
         elif keuze == "2":
             username = input("Voer de username van de Service Engineer in die je wilt bijwerken: ")
-            ManageAdmin.update_acc(username)
+            if ManageAdmin.get_admin_by_username(username):
+                ManageAdmin.update_acc(username)
+            else:
+                input("Gebruiker niet gevonden. Druk op Enter om terug te keren.")
         elif keuze == "3":
             username = input("Voer de username van de Service Engineer in die je wilt verwijderen: ").strip()
             admin = ManageAdmin.get_admin_by_username(username)
