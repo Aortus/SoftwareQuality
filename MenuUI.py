@@ -74,7 +74,7 @@ def system_admin_menu(username):
         elif keuze == "2":
             SystemAdminUI.scooter_beheer()
         elif keuze == "3":
-            SystemAdminUI.traveller_beheer()
+            SystemAdminUI.traveller_beheer(username)
         elif keuze == "4":
             SystemAdminUI.service_engineer_beheer()
         elif keuze == "5":
@@ -126,7 +126,7 @@ def super_admin_menu(username):
         elif keuze == "2":
             SystemAdminUI.scooter_beheer()
         elif keuze == "3":
-            SystemAdminUI.traveller_beheer()
+            SystemAdminUI.traveller_beheer(username)
         elif keuze == "4":
             SystemAdminUI.service_engineer_beheer()
         elif keuze == "5":

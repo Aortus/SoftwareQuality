@@ -76,10 +76,12 @@ def scooter_beheer():
                 if not 0 <= targetstateofcharge <= 100:
                     raise ValueError("Doel-Laadniveau moet tussen 0 en 100 zijn.")
 
-                location = input("Voer locatie in (latitude,longitude — bijv: 51.91,4.44): ")
+                print("\nLet op: Locatie moet binnen de regio van Rotterdam liggen.")
+                print("Latitude moet tussen 51.8 en 52.0 liggen en Longitude tussen 4.3 en 4.6.")
+                location = input("Voer locatie in (latitude,longitude — bijv 51.95,4.44): ")
                 lat, lon = map(float, location.split(','))
                 if not (51.8 <= lat <= 52.0 and 4.3 <= lon <= 4.6):
-                    raise ValueError("Locatie moet binnen Rotterdam vallen.")
+                    raise ValueError("Let op Latitude moet tussen 51.8-52.0 en Longtitude tussen 4.3-4.6")
 
                 outofservice = input("Buiten gebruik? (ja/nee): ").strip().lower()
                 if outofservice not in ["ja", "nee"]:

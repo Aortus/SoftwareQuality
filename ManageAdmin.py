@@ -194,6 +194,8 @@ def AddAdmin():
             go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
         else:
             print("Admin succesvol toegevoegd.")
+            Logs.log_activity(new_username, "Admin toegevoegd", f"Admin {new_username} succesvol toegevoegd", 0)
+            input("Druk op Enter om door te gaan of type 'q' om af te breken: ")
             go_on = "q"
 
 
@@ -222,16 +224,19 @@ def get_id_by_username(username_plain):
             return admin_id
     return None
 
-def get_admin_by_username(username):
+def get_admin_by_username(username_plain):
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id, admin_type FROM admins WHERE username = ?", (username,))
-    result = cursor.fetchone()
+    cursor.execute("SELECT id, username, admin_type FROM admins")
+    rows = cursor.fetchall()
     conn.close()
-    if result:
-        return {"id": result[0], "admin_type": result[1]}
-    else:
-        return None
+
+    for admin_id, encrypted_username, encrypted_admin_type in rows:
+        decrypted_username = Encryption.decrypt_data(encrypted_username)
+        decrypted_admin_type = Encryption.decrypt_data(encrypted_admin_type)
+        if decrypted_username == username_plain:
+            return {"id": admin_id, "admin_type": decrypted_admin_type}
+    return None
 
 def update_own_acc(username):
     conn = sqlite3.connect("SQDB.db")
