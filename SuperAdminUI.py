@@ -65,6 +65,7 @@ def backup_beheer(username):
                 continue
             backup_file = Backup.backup_database(pw)
             print(f"Backup gemaakt: {backup_file}")
+            Logs.log_activity(username, "Backup gemaakt", f"Backup succesvol gemaakt: {backup_file}", 0)
             input("Druk op Enter om terug te keren.")
 
         elif keuze == "2":
@@ -78,6 +79,7 @@ def backup_beheer(username):
                 input("Ongeldig wachtwoord. Druk op Enter om terug te keren.")
             else:
                 print(f"Backup {backup_name} succesvol teruggezet.")
+                Logs.log_activity(username, "Backup teruggezet", f"Backup succesvol teruggezet: {backup_name}", 0)
                 input("Druk op Enter om terug te keren.")
 
         elif keuze == "3":
