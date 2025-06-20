@@ -7,6 +7,7 @@ import Logs
 import ManageAdmin
 import ManageScooter
 import SystemAdminUI
+import SuperAdminUI
 
 def get_admin_type(username):
     admins = ManageAdmin.get_all_admins()
@@ -79,7 +80,8 @@ def system_admin_menu(username):
         elif keuze == "5":
             SystemAdminUI.backup_logs_menu()
         elif keuze == "6":
-            overzicht_gebruikers()
+            ManageAdmin.print_all_admins()
+            input("Druk op Enter om terug te keren naar het menu...")
         elif keuze == "7":
             print("Uitloggen...")
             time.sleep(1)
@@ -109,18 +111,34 @@ def super_admin_menu(username):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"Super Administrator Menu (Ingelogd als: {username})")
-        print("1. (placeholder)")
-        print("2. (placeholder)")
-        print("3. Uitloggen")
+        print("1. Account beheer")
+        print("2. Scooter beheer")
+        print("3. Travellers beheer")
+        print("4. Service Engineer beheer")
+        print("5. System Administrator beheer")
+        print("6. Backup/Logs")
+        print("7. Lijst van alle gebruikers")
+        print("8. Uitloggen")
 
-        keuze = input("\nMaak een keuze (1-3): ")
+        keuze = input("\nMaak een keuze (1-7): ")
         if keuze == "1":
-            input("(placeholder)")
+            SystemAdminUI.account_beheer(username)
         elif keuze == "2":
-            input("(placeholder)")
+            SystemAdminUI.scooter_beheer()
         elif keuze == "3":
+            SystemAdminUI.traveller_beheer()
+        elif keuze == "4":
+            SystemAdminUI.service_engineer_beheer()
+        elif keuze == "5":
+            SuperAdminUI.system_admin_beheer()
+        elif keuze == "6":
+            SystemAdminUI.backup_logs_menu()
+        elif keuze == "7":
+            ManageAdmin.print_all_admins()
+            input("Druk op Enter om terug te keren naar het menu...")
+        elif keuze == "8":
             print("Uitloggen...")
-            time.sleep(10)
+            time.sleep(1)
             LoginUI.login_screen()
             return
         else:
