@@ -9,6 +9,7 @@ import Backup
 import Logs
 import ManageScooter
 import ManageTraveller
+import Login
 
 def account_beheer(username):
     while True:
@@ -108,7 +109,7 @@ def scooter_beheer():
             input("Ongeldige keuze. Druk op Enter.")
 
 
-def traveller_beheer():
+def traveller_beheer(username):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print("Travellerbeheer")
@@ -133,7 +134,9 @@ def traveller_beheer():
             mobilephone = input("Mobiele telefoon: ")
             drivinglicense = input("Rijbewijs: ").strip().lower()
 
-            ManageTraveller.register_traveller(firstname, lastname, birthdate, gender, streetname, streetnumber, zipcode, city, email, mobilephone, drivinglicense)
+            result = ManageTraveller.register_traveller(firstname, lastname, birthdate, gender, streetname, streetnumber, zipcode, city, email, mobilephone, drivinglicense)
+            if result.startswith("Traveller successfully registered"):
+                Logs.log_activity(username, "Traveller registratie", f"{firstname} {lastname} geregistreerd", 0)
         elif keuze == "2":
             ManageTraveller.update_traveller()
         elif keuze == "3":
@@ -144,8 +147,9 @@ def traveller_beheer():
                 print(f"Traveller met e-mailadres {email} wordt verwijderd.")
                 ManageTraveller.delete_traveller(email)
                 input("Traveller succesvol verwijderd. Druk op Enter om verder te gaan.")
+                Logs.log_activity(username, "Traveller verwijdering", f"Traveller met e-mailadres {email} verwijderd", 0)
             else:
-                print("Travellerverwijdering geannuleerd.")
+                print("Traveller verwijdering geannuleerd.")
                 input("Druk op Enter om terug te keren.")
         elif keuze == "4":
             search_term = input("Voer een zoekterm in (deel van voornaam, achternaam, e-mailadres, etc.): ").strip()
@@ -194,7 +198,7 @@ def service_engineer_beheer():
             input("Ongeldige keuze. Druk op Enter.")
 
 
-def backup_logs_menu():
+def backup_logs_menu(username):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print("Backup & Logs")
@@ -205,9 +209,29 @@ def backup_logs_menu():
 
         keuze = input("Maak een keuze (1-4): ")
         if keuze == "1":
-            Backup.backup_database()
+            password = input("Voer een wachtwoord in voor de backup: ")
+            if not password or Login.has_null_byte(password):
+                input("Wachtwoord mag niet leeg zijn. Druk op Enter om terug te keren.")
+                continue
+            Backup.backup_database(password)
         elif keuze == "2":
-            Backup.restore_database_from_backup()
+            backup_file = input("Voer de naam van het backup bestand in (bijv. SQDB_backup_20231001_1200.db): ")
+            if not os.path.exists(backup_file):
+                input(f"Backup bestand '{backup_file}' bestaat niet. Druk op Enter om terug te keren.")
+                continue
+            wwofcode = input("Herstel via wachtwoord of code? (1. Wachtwoord / 2. Code): ").strip()
+            if wwofcode in ("1", "wachtwoord"):
+                restore_password = input("Voer het wachtwoord in voor de backup: ")
+                if not restore_password or Login.has_null_byte(restore_password):
+                    input("Wachtwoord mag niet leeg zijn. Druk op Enter om terug te keren.")
+                    continue
+                Backup.restore_database_from_password(backup_file, restore_password)
+            elif wwofcode in ("2", "code"):
+                restore_code = input("Voer de herstelcode in: ")
+                if not restore_code or Login.has_null_byte(restore_code):
+                    input("Herstelcode mag niet leeg zijn. Druk op Enter om terug te keren.")
+                    continue
+                Backup.restore_backup_through_code(backup_file, restore_code, username)
         elif keuze == "3":
             print("\nAlle logs:")
             decrypted = Logs.get_all_logs()
