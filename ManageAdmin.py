@@ -169,12 +169,13 @@ def change_password(username):
 
 def AddAdmin(): 
     go_on = ""
-    while go_on.lower() != "q":
+    while go_on != "q":
         new_username = input("Voer de nieuwe username in: ")
         new_password = input("Voer het nieuwe wachtwoord in: ")
         new_firstname = input("Voer de voornaam in: ")
         new_lastname = input("Voer de achternaam in: ")
         admintype = input("Voer het admin type in ('1. System Administrator', '2. Service Engineer'): ").lower()
+
         if admintype in ("1", "system administrator", "systemadmin"):
             new_admintype = "System Administrator"
         elif admintype in ("2", "service engineer", "serviceengineer"):
@@ -183,14 +184,17 @@ def AddAdmin():
             print("Ongeldige admin type. Probeer het opnieuw.")
             Logs.log_activity(new_username, "Admin toevoegen gefaald", "Ongeldige admin type ingevoerd", 1)
             go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
+            continue
 
-        if (Login.register(new_username, new_password, new_firstname, new_lastname, new_admintype) != "Admin succesfully registered"):
+        result = Login.register(new_username, new_password, new_firstname, new_lastname, new_admintype)
+        if result != "Admin succesfully registered":
             print("Er is iets fout gegaan bij het toevoegen van de admin. Probeer het opnieuw.")
             Logs.log_activity(new_username, "Admin toevoegen gefaald", "Er is iets fout gegaan bij het toevoegen van de admin", 1)
             go_on = input("Druk op Enter om opnieuw te proberen of type 'q' om af te breken: ")
-        
         else:
+            print("Admin succesvol toegevoegd.")
             go_on = "q"
+
 
 def delete_entry_by_id(table_name, entry_id):
     conn = sqlite3.connect("SQDB.db")
