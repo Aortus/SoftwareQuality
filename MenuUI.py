@@ -3,7 +3,7 @@ import LoginUI
 import sqlite3
 import time
 import ServiceEngineerLogic
-import Encryption
+import Logs
 import ManageAdmin
 import ManageScooter
 import SystemAdminUI
@@ -40,6 +40,22 @@ def service_engineer_menu(username):
             input("Ongeldige keuze. Druk op Enter om opnieuw te proberen.")
 
 def system_admin_menu(username):
+    if Logs.check_unread_suspicious_logs():
+        print("\nWaarschuwing: Er zijn ongelezen verdachte logbestanden!")
+        keuze = input("Wil je deze nu bekijken? (ja/nee): ").lower()
+        if keuze == "ja":
+            logs = Logs.get_unread_suspicious_logs()
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Verdachte ongelezen logbestanden:\n")
+            for log in logs:
+                print(f"Log ID      : {log[0]}")
+                print(f"Timestamp   : {log[1]}")
+                print(f"User ID     : {log[2]}")
+                print(f"Action      : {log[3]}")
+                print(f"Details     : {log[4]}")
+                print(f"Status      : {log[5]}\n")
+            input("Druk op Enter om verder te gaan naar het hoofdmenu...")
+
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"System Administrator Menu (Ingelogd als: {username})")
@@ -74,6 +90,22 @@ def system_admin_menu(username):
 
 
 def super_admin_menu(username):
+    if Logs.check_unread_suspicious_logs():
+        print("\nWaarschuwing: Er zijn ongelezen verdachte logbestanden!\n")
+        keuze = input("Wil je deze nu bekijken? (j/n): ").lower()
+        if keuze == "j":
+            logs = Logs.get_unread_suspicious_logs()
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Verdachte ongelezen logbestanden:\n")
+            for log in logs:
+                print(f"Log ID      : {log[0]}")
+                print(f"Timestamp   : {log[1]}")
+                print(f"User ID     : {log[2]}")
+                print(f"Action      : {log[3]}")
+                print(f"Details     : {log[4]}")
+                print(f"Status      : {log[5]}\n")
+            input("Druk op Enter om verder te gaan naar het hoofdmenu...")
+
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"Super Administrator Menu (Ingelogd als: {username})")

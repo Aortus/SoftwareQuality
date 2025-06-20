@@ -68,3 +68,48 @@ def get_all_logs():
             "read" if row[6] == 1 else "unread"       # is_read
         ))
     return decrypted
+
+def check_unread_suspicious_logs():
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT COUNT(*) FROM logs
+        WHERE is_read = 0 AND is_suspicious = 1
+    """)
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count > 0
+
+def get_unread_suspicious_logs():
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, timestamp, user_id, action, details, is_suspicious
+        FROM logs 
+        WHERE is_read = 0 AND is_suspicious = 1
+    """)
+    rows = cursor.fetchall()
+
+    decrypted = []
+    read_ids = []
+
+    for row in rows:
+        decrypted.append(( 
+            row[0],  # id
+            row[1],  # timestamp
+            Encryption.decrypt_data(row[2]),
+            Encryption.decrypt_data(row[3]),
+            Encryption.decrypt_data(row[4]),
+            "suspicious" if row[5] == 1 else "safe"
+        ))
+        read_ids.append(row[0])
+
+    if read_ids:
+        cursor.executemany(
+            "UPDATE logs SET is_read = 1 WHERE id = ?",
+            [(log_id,) for log_id in read_ids]
+        )
+        conn.commit()
+
+    conn.close()
+    return decrypted

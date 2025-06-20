@@ -196,7 +196,17 @@ def backup_logs_menu():
         elif keuze == "2":
             Backup.restore_database_from_backup()
         elif keuze == "3":
-            Logs.get_all_logs()
+            print("\nAlle logs:")
+            decrypted = Logs.get_all_logs()
+            for log in decrypted:
+                print(f"Log ID      : {log[0]}")
+                print(f"Timestamp   : {log[1]}")
+                print(f"User ID     : {log[2]}")
+                print(f"Action      : {log[3]}")
+                print(f"Details     : {log[4]}")
+                print(f"Status      : {log[5]}")
+                print(f"Read Status : {log[6]}\n")
+            input("\nDruk op Enter om terug te keren.")
         elif keuze == "4":
             break
         else:
