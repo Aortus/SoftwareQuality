@@ -70,7 +70,7 @@ def system_admin_menu(username):
 
         keuze = input("\nMaak een keuze (1-7): ")
         if keuze == "1":
-            SystemAdminUI.account_beheer(username)
+            ManageAdmin.update_own_acc(username)
         elif keuze == "2":
             SystemAdminUI.scooter_beheer()
         elif keuze == "3":
@@ -122,7 +122,7 @@ def super_admin_menu(username):
 
         keuze = input("\nMaak een keuze (1-7): ")
         if keuze == "1":
-            ManageAdmin.update_acc(username)
+            ManageAdmin.update_own_acc(username)
         elif keuze == "2":
             SystemAdminUI.scooter_beheer()
         elif keuze == "3":

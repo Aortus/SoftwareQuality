@@ -16,6 +16,7 @@ def account_beheer(username):
         os.system('cls' if os.name == 'nt' else 'clear')
         print("Accountbeheer")
         print("1. Profielgegevens bijwerken")
+        print("2. Wachtwoord wijzigen")
         print("2. Account verwijderen")
         print("3. Terug naar hoofdmenu")
 
@@ -23,12 +24,16 @@ def account_beheer(username):
         if keuze == "1":
             ManageAdmin.update_acc(username)
         elif keuze == "2":
+            ServiceEngineerLogic.update_password(username)
+        elif keuze == "3":
             print("Weet u zeker dat u dit account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")
             confirm = input("Typ 'ja' om te bevestigen: ").strip().lower()
             if confirm == 'ja':
                 user_id = ManageAdmin.get_id_by_username(username)
-                ManageAdmin.delete_entry_by_id("admins", user_id)
+                print(ManageAdmin.delete_entry_by_id("admins", user_id))
                 print("Account succesvol verwijderd.")
+                input("Druk op Enter om terug te keren naar het inlogscherm.")
+                LoginUI.login_screen()
             else:
                 print("Accountverwijdering geannuleerd.")
                 input("Druk op Enter om terug te keren.")

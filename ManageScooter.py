@@ -12,7 +12,7 @@ def get_all_scooters():
     decrypted_scooters = []
     for scooter in scooters:
         scooter_list = list(scooter)
-        for i in range(0, len(scooter_list)):
+        for i in range(0, len(scooter_list) - 1):
             if i == 0:
                 continue
             scooter_list[i] = Encryption.decrypt_data(scooter_list[i])

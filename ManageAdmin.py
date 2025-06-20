@@ -5,6 +5,7 @@ import datetime
 import Encryption
 from time import sleep
 import Logs
+import LoginUI
 
 def get_all_admins():
     conn = sqlite3.connect("SQDB.db")
@@ -208,13 +209,18 @@ def delete_entry_by_id(table_name, entry_id):
 
     return f"Account met {entry_id} verwijderd van '{table_name}'."
 
-def get_id_by_username(username):
+def get_id_by_username(username_plain):
     conn = sqlite3.connect("SQDB.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM admins WHERE username = ?", (username,))
-    result = cursor.fetchone()
+    cursor.execute("SELECT id, username FROM admins")
+    rows = cursor.fetchall()
     conn.close()
-    return result[0] if result else None
+
+    for admin_id, encrypted_username in rows:
+        decrypted_username = Encryption.decrypt_data(encrypted_username)
+        if decrypted_username == username_plain:
+            return admin_id
+    return None
 
 def get_admin_by_username(username):
     conn = sqlite3.connect("SQDB.db")
@@ -226,3 +232,86 @@ def get_admin_by_username(username):
         return {"id": result[0], "admin_type": result[1]}
     else:
         return None
+
+def update_own_acc(username):
+    conn = sqlite3.connect("SQDB.db")
+    cursor = conn.cursor()
+
+    change = input(
+        "\nWat wilt u veranderen aan het account?\n"
+        "1. Naam\n"
+        "2. Username\n"
+        "3. Wachtwoord\n"
+        "4. Verwijderen\n"
+        "5. Terug\n"
+        "Keuze: "
+    ).lower()
+
+    if Login.has_null_byte(change):
+        print("Ongeldige invoer. Probeer het opnieuw.")
+        return
+
+    if change in ("1", "naam"):
+        choice = input("Welke naam wilt u veranderen? (1. Voornaam / 2. Achternaam): ").lower()
+        if choice in ("1", "voornaam", "voor"):
+            new_firstname = input("Voer de nieuwe voornaam in (type Q om te stoppen): ")
+            if new_firstname.lower() == "q":
+                print("Wijzigen afgebroken.")
+                return
+            cursor.execute(
+                "UPDATE admins SET firstname = ? WHERE username = ?",
+                (new_firstname, username)
+            )
+            conn.commit()
+            print(f"Voornaam gewijzigd naar: {new_firstname}")
+            Logs.log_activity(username, "Name Change", f"Voornaam gewijzigd naar: {new_firstname}", 0)
+            input("Druk op Enter om terug te gaan.")
+
+        elif choice in ("2", "achternaam", "achter"):
+            new_lastname = input("Voer de nieuwe achternaam in (type Q om te stoppen): ")
+            if new_lastname.lower() == "q":
+                print("Wijzigen afgebroken.")
+                return
+            cursor.execute(
+                "UPDATE admins SET lastname = ? WHERE username = ?",
+                (new_lastname, username)
+            )
+            conn.commit()
+            print(f"Achternaam gewijzigd naar: {new_lastname}")
+            Logs.log_activity(username, "Name Change", f"Achternaam gewijzigd naar: {new_lastname}", 0)
+            input("Druk op Enter om terug te gaan.")
+
+    elif change in ("2", "username"):
+        new_username = ""
+        while True:
+            new_username = input("Wat moet de nieuwe username worden? (type Q om te stoppen): ")
+            if new_username.lower() == "q":
+                print("Wijzigen afgebroken.")
+                break
+            if(Login.is_valid_username(new_username)):
+                cursor.execute(
+                    "UPDATE admins SET username = ? WHERE username = ?",
+                    (new_username, username)
+                )
+                conn.commit()
+                print(f"Username gewijzigd naar: {new_username}")
+                Logs.log_activity(username, "Username Change", f"username gewijzigd van {username} naar: {new_username}", 0)
+                break
+
+    elif change in ("3", "wachtwoord"):
+        new_password = input("Nieuw wachtwoord: ")
+        if Login.is_valid_password(new_password):
+            Login.change_password(username, new_password)
+            input("Wachtwoord succesvol gewijzigd. Druk op Enter om terug te keren.")
+        else:
+            input("Ongeldig wachtwoord. Zorg ervoor dat het minstens 12 tekens lang is, een hoofdletter, een kleine letter, een cijfer en een speciaal teken bevat. Druk op Enter om opnieuw te proberen.")
+    
+    elif change in ("4", "verwijderen"):
+        print("Weet u zeker dat u dit account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")
+        confirm = input("Typ 'ja' om te bevestigen: ").strip().lower()
+        if confirm == 'ja':
+            user_id = get_id_by_username(username)
+            print(delete_entry_by_id("admins", user_id))
+            print("Account succesvol verwijderd.")
+            input("Druk op Enter om terug te keren naar het inlogscherm.")
+            LoginUI.login_screen()
