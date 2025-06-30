@@ -16,10 +16,9 @@ def system_admin_beheer():
         print("1. System Administrator toevoegen")
         print("2. System Administrator profiel bijwerken")
         print("3. System Administrator verwijderen")
-        print("4. Backups beheren")
-        print("5. Terug naar hoofdmenu")
+        print("4. Terug naar hoofdmenu")
 
-        keuze = input("Maak een keuze (1-5): ")
+        keuze = input("Maak een keuze (1-4): ")
         if keuze == "1":
             ManageAdmin.AddAdmin()
             input("System Administrator toegevoegd. Druk op Enter om terug te keren.")
@@ -40,7 +39,7 @@ def system_admin_beheer():
                     input(msg + " Druk op Enter om terug te keren.")
                 else:
                     input("Verwijderen geannuleerd. Druk op Enter om terug te keren.")
-        elif keuze == "5":
+        elif keuze == "4":
             break
         else:
             input("Ongeldige keuze. Druk op Enter.")
@@ -56,7 +55,7 @@ def backup_beheer(username):
         print("4. Herstelcode verwijderen")
         print("5. Terug naar hoofdmenu")
 
-        keuze = input("Maak een keuze (1-6): ")
+        keuze = input("Maak een keuze (1-5): ")
 
         if keuze == "1":
             pw = input("Voer het wachtwoord in om een backup te maken: ")
